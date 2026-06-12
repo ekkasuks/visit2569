@@ -3,1246 +3,180 @@
 <head>
 <meta charset="UTF-8">
 <title>แบบ นร./กสศ.01</title>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html2pdf.bundle.min.js"></script>
 <link href="https://fonts.googleapis.com/css2?family=Sarabun:wght@300;400;500;600;700&display=swap" rel="stylesheet">
 <style>
 /* ══════════════════════════════════════════════
-   BASE — A4 210×297mm
+   BASE CONFIGURATION — A4 210×297mm
 ══════════════════════════════════════════════ */
 *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
 
 body {
   font-family: 'Sarabun', sans-serif;
-  font-size: 9pt;
+  font-size: 8.5pt;
   color: #000;
-  background: #e8e8e8;
+  background: #ffffff;
 }
 
-/* ── Page wrapper ── */
+@page {
+  size: A4 portrait;
+  margin: 0;
+}
+
 .page {
   width: 210mm;
-  min-height: 297mm;
-  padding: 8mm 10mm 8mm 12mm;
+  height: 297mm;
+  padding: 12mm 12mm 10mm 14mm;
   background: #fff;
-  margin: 8mm auto;
   position: relative;
-  box-shadow: 0 2px 12px rgba(0,0,0,.18);
+  page-break-after: always;
+  overflow: hidden;
 }
 
-/* ── Page header badge ── */
+.page:last-child { page-break-after: avoid; }
+
+/* ── หัวมุมระบุหน้า ── */
 .page-badge {
   position: absolute;
-  top: 5mm;
-  right: 10mm;
+  top: 6mm;
+  right: 12mm;
   text-align: right;
-  font-size: 8pt;
-  line-height: 1.5;
 }
 .page-badge .badge-box {
   display: inline-block;
   border: 1px solid #000;
-  padding: 1.5mm 3mm;
+  padding: 1mm 2.5mm;
   font-weight: 700;
   font-size: 8.5pt;
 }
 
-/* ── Logo + title block (หน้า 1) ── */
+/* ── ส่วนหัวฟอร์มและโลโก้ ── */
 .form-title-block {
-  display: flex;
-  align-items: center;
+  display: block;
   margin-bottom: 3mm;
-}
-.kss-logo {
-  width: 18mm;
-  flex-shrink: 0;
-  margin-right: 0;
+  margin-top: 4mm;
+  position: relative;
+  min-height: 32mm;
 }
 .kss-logo-img {
   width: 16mm;
   height: 16mm;
   background: #1a56db;
-  border-radius: 3mm;
-  display: flex;
-  align-items: center;
-  justify-content: center;
+  border-radius: 2mm;
+  text-align: center;
+  line-height: 16mm;
   color: #fff;
-  font-size: 14pt;
+  font-size: 13pt;
   font-weight: 800;
-  font-family: serif;
+  position: absolute;
 }
 .form-title-center {
-  flex: 1;
+  margin-left: 20mm;
+  margin-right: 30mm;
   text-align: center;
 }
-.form-title-center h1 {
-  font-size: 13pt;
-  font-weight: 700;
-  line-height: 1.4;
-}
-.form-title-center h2 {
-  font-size: 11pt;
-  font-weight: 600;
-}
-.photo-box-top {
-  width: 28mm;
-  flex-shrink: 0;
-  text-align: center;
-}
-.photo-box-top .photo-label {
-  font-size: 8pt;
-  font-weight: 700;
-  margin-bottom: 1mm;
-}
-.photo-box-top .photo-frame {
-  width: 26mm;
-  height: 32mm;
-  border: 1px solid #000;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  font-size: 7.5pt;
-  color: #555;
-  overflow: hidden;
-}
-.photo-box-top .photo-frame img {
-  width: 100%; height: 100%; object-fit: cover;
-}
+.form-title-center h1 { font-size: 14pt; font-weight: 700; }
+.form-title-center h2 { font-size: 11pt; font-weight: 600; }
 
-/* ── School line ── */
-.school-line {
-  display: flex;
-  gap: 6mm;
-  margin-bottom: 2mm;
-  font-size: 9pt;
-}
-.school-line .field-line {
-  display: flex;
-  align-items: baseline;
-  gap: 2mm;
-  flex: 1;
-}
-.school-line .field-line .fl { font-weight: 700; white-space: nowrap; }
-.school-line .field-line .fv {
-  flex: 1;
-  border-bottom: 1px solid #000;
-  min-width: 30mm;
-  padding-bottom: 0.5mm;
-}
-
-/* ── Section header ── */
-.sec-hd {
-  font-size: 9pt;
-  font-weight: 700;
-  margin: 2mm 0 1.5mm;
-}
-
-/* ── Inline label-value ── */
-.row-line {
-  display: flex;
-  flex-wrap: wrap;
-  gap: 1mm 4mm;
-  align-items: baseline;
-  margin-bottom: 1.5mm;
-  font-size: 9pt;
-}
-.row-line .fl { font-weight: 700; white-space: nowrap; }
-.row-line .fv {
-  border-bottom: 1px solid #000;
-  min-width: 20mm;
-  padding-bottom: 0.5mm;
-  flex: 1;
-}
-.row-line .fv.w30 { min-width: 30mm; flex: 0 0 30mm; }
-.row-line .fv.w40 { min-width: 40mm; flex: 0 0 40mm; }
-.row-line .fv.w50 { min-width: 50mm; flex: 0 0 50mm; }
-.row-line .fv.w60 { min-width: 60mm; flex: 0 0 60mm; }
-.row-line .fv.w70 { min-width: 70mm; flex: 0 0 70mm; }
-.row-line .fv.wfull { flex: 1; }
-
-/* ── ID boxes ── */
-.id-boxes {
-  display: flex;
-  gap: 1mm;
-  align-items: center;
-}
-.id-boxes .id-seg {
-  display: flex;
-  gap: 0.5mm;
-}
+/* ── กล่องเลขบัตรประชาชน 13 หลัก ── */
+.id-boxes { display: inline-block; vertical-align: middle; }
 .id-box {
+  display: inline-block;
   width: 5.5mm;
   height: 5.5mm;
   border: 1px solid #000;
-  display: flex;
-  align-items: center;
-  justify-content: center;
+  text-align: center;
+  line-height: 5.5mm;
   font-size: 9pt;
   font-weight: 700;
+  margin-right: 0.3mm;
+  background: #fff;
 }
-.id-dash { font-size: 9pt; margin: 0 0.5mm; }
+.id-dash { font-size: 9pt; margin: 0 1mm; display: inline-block; vertical-align: middle; }
 
-/* ── Radio inline ── */
-.radio-inline {
-  display: flex;
-  flex-wrap: wrap;
-  gap: 1mm 3mm;
-  align-items: center;
-  font-size: 8.5pt;
-  margin-bottom: 1.5mm;
-}
-.r-item {
-  display: flex;
-  align-items: center;
-  gap: 1mm;
-  white-space: nowrap;
-}
+/* ── ส่วนแสดงเครื่องหมายเลือกตัวเลือก ── */
 .r-circle {
+  display: inline-block;
   width: 3.5mm;
   height: 3.5mm;
   border: 1px solid #000;
   border-radius: 50%;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  font-size: 7pt;
-  flex-shrink: 0;
+  margin-right: 1mm;
+  vertical-align: middle;
+  text-align: center;
+  line-height: 3.5mm;
 }
 .r-circle.filled::after {
   content: '●';
   font-size: 5pt;
+  display: block;
+  color: #000;
 }
 
-/* ── Checkbox inline ── */
-.cb-inline {
-  display: flex;
-  flex-wrap: wrap;
-  gap: 1mm 3mm;
-  align-items: center;
-  font-size: 8.5pt;
-  margin-bottom: 1.5mm;
-}
-.cb-item {
-  display: flex;
-  align-items: center;
-  gap: 1mm;
-  white-space: nowrap;
-}
-.cb-sq {
-  width: 3.5mm;
-  height: 3.5mm;
-  border: 1px solid #000;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  font-size: 7pt;
-  flex-shrink: 0;
-}
+/* ── ตารางสมาชิกเครือข่ายครัวเรือน ── */
+.mem-table { width: 100%; border-collapse: collapse; font-size: 7.5pt; }
+.mem-table th, .mem-table td { border: 1px solid #000; padding: 1mm 0.5mm; text-align: center; }
+.mem-table th { background: #f5f5f5; font-weight: 700; }
+.mem-table td.name-cell { text-align: left; padding-left: 1mm; }
 
-/* ══════════════════════════════════════════════
-   MEMBER TABLE (หน้า 1–2)
-══════════════════════════════════════════════ */
-.mem-table {
-  width: 100%;
-  border-collapse: collapse;
-  font-size: 7.5pt;
-  margin-top: 2mm;
-}
-.mem-table th, .mem-table td {
-  border: 1px solid #000;
-  padding: 1mm 1.5mm;
-  text-align: center;
-  vertical-align: middle;
-  line-height: 1.3;
-}
-.mem-table th {
-  background: #f5f5f5;
-  font-weight: 700;
-  font-size: 7pt;
-}
-.mem-table td.name-cell { text-align: left; min-width: 28mm; }
-.mem-table .th-group { background: #ececec; }
-.mem-table tr.income-total td { background: #e8f0fe; font-weight: 700; }
-.mem-table tr.income-avg  td { background: #e6f4ea; font-weight: 700; }
-.mem-table td.num { text-align: right; }
-
-/* ══════════════════════════════════════════════
-   PAGE BREAK
-══════════════════════════════════════════════ */
-@media print {
-  body { background: #fff; }
-  .page {
-    margin: 0;
-    box-shadow: none;
-    page-break-after: always;
-  }
-  .page:last-child { page-break-after: avoid; }
-  @page { size: A4 portrait; margin: 0; }
-}
-
-/* ── Divider ── */
-.hdiv {
-  border: none;
-  border-top: 0.5px solid #888;
-  margin: 1.5mm 0;
-}
-.bold-div {
-  border-top: 1px solid #000;
-  margin: 1.5mm 0;
-}
-
-/* ── House photos ── */
-.photo-pair {
-  display: grid;
-  grid-template-columns: 1fr 1fr;
-  gap: 4mm;
-  margin-top: 2mm;
-}
-.photo-slot {
-  border: 1px solid #000;
-  min-height: 35mm;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  font-size: 8pt;
-  color: #555;
-  text-align: center;
-  overflow: hidden;
-  position: relative;
-}
-.photo-slot img { width: 100%; height: 100%; object-fit: cover; position: absolute; inset: 0; }
-.photo-slot-label {
-  font-size: 8pt;
-  font-weight: 700;
-  margin-bottom: 1mm;
-}
-.photo-hint {
-  font-size: 7.5pt;
-  font-style: italic;
-  color: #444;
-  text-align: center;
-}
-
-/* ── Signature block ── */
-.sig-grid {
-  display: grid;
-  grid-template-columns: repeat(5, 1fr);
-  gap: 3mm;
-  margin-top: 3mm;
-}
-.sig-block { text-align: center; }
-.sig-canvas-box {
-  border: 1px solid #000;
-  height: 18mm;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  overflow: hidden;
-  margin-bottom: 1mm;
-}
-.sig-canvas-box img { max-height: 100%; max-width: 100%; }
-.sig-line {
-  border-top: 1px solid #000;
-  padding-top: 1mm;
-  font-size: 7.5pt;
-  text-align: center;
-  line-height: 1.5;
-}
-
-/* ── Warning box ── */
-.note-box {
-  background: #fffde7;
-  border: 1px solid #f9a825;
-  padding: 2mm 3mm;
-  font-size: 7.5pt;
-  margin-top: 2mm;
-  font-style: italic;
-}
-
-/* ── Footer ── */
-.page-footer {
-  position: absolute;
-  bottom: 5mm;
-  left: 12mm;
-  right: 10mm;
-  font-size: 7pt;
-  color: #555;
-  text-align: center;
-  border-top: 0.5px solid #aaa;
-  padding-top: 1mm;
-}
-
-/* ── Table cell blank rows ── */
-.mem-table td.blank { color: #fff; }
+/* ── กล่องลายเซ็นและรูปภาพ ── */
+.photo-slot { border: 1px solid #000; height: 42mm; background: #fafafa; text-align: center; padding-top: 15mm; position: relative; }
+.sig-canvas-box { border: 1px solid #000; height: 18mm; background: #fafafa; }
 </style>
 </head>
 <body>
 
-<!-- ╔══════════════════════════════════════════╗
-     ║  PAGE 1  ข้อมูลนักเรียน + สมาชิก 1-5   ║
-     ╚══════════════════════════════════════════╝ -->
-<div class="page" id="kss-page1">
-
-  <div class="page-badge">
-    <div class="badge-box">แบบ นร./กสศ.01 หน้า 1</div><br>
-    <span style="font-size:7.5pt">ฉบับปรับปรุง 6 มีนาคม 2569</span>
-  </div>
-
-  <!-- Title -->
-  <div class="form-title-block">
-    <div class="kss-logo">
+<div id="kss-form-root">
+  
+  <div class="page" id="kss-page1">
+    <div class="page-badge"><div class="badge-box">แบบ นร./กสศ.01 หน้า 1</div></div>
+    <div class="form-title-block">
       <div class="kss-logo-img">กสศ</div>
-    </div>
-    <div class="form-title-center">
-      <h1>แบบขอรับเงินอุดหนุนนักเรียนยากจน</h1>
-      <h2>ภาคเรียนที่ 1 ปีการศึกษา 2569</h2>
-    </div>
-    <div class="photo-box-top">
-      <div class="photo-label">รูปถ่าย<br>นักเรียน</div>
-      <div class="photo-frame" id="pdf-photo-student">
-        <span>รูปถ่าย<br>นักเรียน</span>
+      <div class="form-title-center">
+        <h1>แบบขอรับเงินอุดหนุนนักเรียนยากจน</h1>
+        <h2>ภาคเรียนที่ 1 ปีการศึกษา 2569</h2>
       </div>
     </div>
-  </div>
-
-  <!-- School -->
-  <div class="school-line">
-    <div class="field-line"><span class="fl">โรงเรียน</span><span class="fv" id="pdf-school">{{school}}</span></div>
-    <div class="field-line"><span class="fl">สังกัด</span><span class="fv" id="pdf-affil">{{affiliation}}</span></div>
-  </div>
-
-  <hr class="bold-div">
-
-  <!-- Section 1 -->
-  <div class="sec-hd">1. ข้อมูลนักเรียน</div>
-  <div class="row-line">
-    <span class="fl">ชื่อนักเรียน</span><span class="fv w50" id="pdf-fname">{{std_fname}}</span>
-    <span class="fl">นามสกุล</span><span class="fv w50" id="pdf-lname">{{std_lname}}</span>
-    <span class="fl">ชั้น</span><span class="fv w20" id="pdf-class" style="min-width:15mm;flex:0 0 15mm">{{std_class}}</span>
-  </div>
-
-  <div class="row-line" style="margin-bottom:2mm">
-    <span class="fl">เลขประจำตัวประชาชน/เลขรหัส G</span>
-    <div class="id-boxes" id="pdf-id-boxes">
-      <!-- filled by JS -->
-    </div>
-  </div>
-
-  <div class="row-line" style="align-items:center">
-    <span class="fl">สถานภาพครอบครัว</span>
-    <div class="radio-inline" id="pdf-fam-status" style="flex:1">
-      <div class="r-item"><div class="r-circle" id="rc-f1"></div>พ่อแม่อยู่ด้วยกัน</div>
-      <div class="r-item"><div class="r-circle" id="rc-f2"></div>พ่อแม่แยกกันอยู่</div>
-      <div class="r-item"><div class="r-circle" id="rc-f3"></div>พ่อแม่หย่าร้าง</div>
-      <div class="r-item"><div class="r-circle" id="rc-f4"></div>พ่อเสียชีวิต/สาบสูญ</div>
-      <div class="r-item"><div class="r-circle" id="rc-f5"></div>แม่เสียชีวิต/สาบสูญ</div>
-      <div class="r-item"><div class="r-circle" id="rc-f6"></div>เสียชีวิตทั้งคู่/สาบสูญ</div>
-      <div class="r-item"><div class="r-circle" id="rc-f7"></div>พ่อ/แม่ทอดทิ้ง</div>
-    </div>
-  </div>
-
-  <div class="row-line" style="align-items:center">
-    <span class="fl">นักเรียนอาศัยอยู่กับ</span>
-    <div class="radio-inline" style="flex:1">
-      <div class="r-item"><div class="r-circle" id="rc-l1"></div>พ่อ/แม่</div>
-      <div class="r-item"><div class="r-circle" id="rc-l2"></div>ญาติ</div>
-      <div class="r-item"><div class="r-circle" id="rc-l3"></div>อยู่ลำพัง</div>
-      <div class="r-item"><div class="r-circle" id="rc-l4"></div>ผู้อุปการะ/นายจ้าง</div>
-      <div class="r-item"><div class="r-circle" id="rc-l5"></div>ครัวเรือนสถาบัน</div>
-    </div>
-  </div>
-
-  <div class="row-line">
-    <span class="fl">ชื่อผู้ปกครองนักเรียน</span><span class="fv w40" id="pdf-gfname">{{grd_fname}}</span>
-    <span class="fl">นามสกุล</span><span class="fv w40" id="pdf-glname">{{grd_lname}}</span>
-    <span class="fl">ความสัมพันธ์กับนักเรียน</span><span class="fv w30" id="pdf-grel">{{grd_rel}}</span>
-    <span class="fl">การศึกษาสูงสุด</span><span class="fv w30" id="pdf-gedu">{{grd_edu}}</span>
-  </div>
-
-  <div class="row-line">
-    <span class="fl">อาชีพ</span><span class="fv w35" id="pdf-gjob">{{grd_job}}</span>
-    <span class="fl">เบอร์โทรศัพท์ผู้ปกครอง/สมาชิกครัวเรือนที่ติดต่อได้</span>
-    <span class="fv w30" id="pdf-gphone">{{grd_phone}}</span>
-    <span class="fl">เลขประจำตัวประชาชน</span>
-    <div class="id-boxes" id="pdf-gid-boxes"></div>
-  </div>
-
-  <div class="cb-inline" style="margin-bottom:1.5mm">
-    <div class="cb-item"><div class="cb-sq" id="cb-noid"></div>ไม่มีเลขประจำตัวประชาชน</div>
-    <div class="cb-item" style="margin-left:4mm"><div class="cb-sq" id="cb-welfare"></div>ได้สวัสดิการแห่งรัฐ (ทะเบียนคนจน)</div>
-  </div>
-
-  <hr class="hdiv">
-
-  <!-- Section 2 header -->
-  <div class="sec-hd" style="display:flex;align-items:baseline;gap:3mm">
-    2. จำนวนสมาชิกในครัวเรือน (รวมตัวนักเรียน) รวม
-    <span style="border-bottom:1px solid #000;min-width:10mm;display:inline-block;text-align:center;font-weight:700" id="pdf-memcount">{{member_count}}</span>
-    คน <span style="font-weight:400;font-size:8pt">(หากอาศัยอยู่ในครัวเรือนสถาบัน ให้ข้ามไปตอบข้อที่ 4)</span>
-  </div>
-  <p style="font-size:7.5pt;color:#333;margin-bottom:1.5mm">(สมาชิกในครัวเรือนหมายถึง สมาชิกที่อาศัยอยู่ในครัวเรือนเดียวกันตั้งแต่ 3 เดือนขึ้นไปและมีค่าใช้จ่ายร่วมกัน)</p>
-
-  <!-- Member table page 1 (rows 1-5) -->
-  <table class="mem-table" id="pdf-mem-table-1">
-    <thead>
-      <tr>
-        <th rowspan="3" style="width:5mm">คนที่</th>
-        <th rowspan="3" style="min-width:28mm">ชื่อ - นามสกุล</th>
-        <th rowspan="3" style="width:14mm">ความ<br>สัมพันธ์<br>กับ<br>นักเรียน</th>
-        <th rowspan="3" style="width:22mm">เลขประจำตัว<br>ประชาชน</th>
-        <th rowspan="3" style="width:14mm">การศึกษา<br>สูงสุด</th>
-        <th rowspan="3" style="width:8mm">อายุ</th>
-        <th colspan="2" class="th-group">(หากมีใส่เครื่องหมาย ✔)</th>
-        <th colspan="5">รายได้เฉลี่ยต่อเดือนแยกตามประเภท (บาท)</th>
-        <th rowspan="3" style="width:14mm">รายได้รวม<br>เฉลี่ย<br>ต่อเดือน</th>
-      </tr>
-      <tr>
-        <th rowspan="2" style="width:10mm">มีความ<br>พิการ<br>ทางร่างกาย/<br>สติปัญญา</th>
-        <th rowspan="2" style="width:10mm">มีโรค<br>เรื้อรัง<br>ยกเว้น ความ<br>ดัน/เบา<br>หวาน</th>
-        <th style="width:13mm">ค่าจ้าง<br>เงินเดือน</th>
-        <th style="width:13mm">อาชีพ<br>เกษตรกรรม<br>(หลังหัก<br>ต้นทุน)</th>
-        <th style="width:13mm">ธุรกิจ<br>ส่วนตัว<br>(หลังหัก<br>ต้นทุน)</th>
-        <th style="width:13mm">สวัสดิการ<br>จากรัฐ<br>(บำนาญ,<br>เบี้ยผู้สูงอายุ<br>ฯลฯ)</th>
-        <th style="width:13mm">รายได้จาก<br>แหล่งอื่นๆ<br>(เงินโอน,<br>ค่าเช่าฯ)</th>
-      </tr>
-    </thead>
-    <tbody id="pdf-mem-body-1">
-      <!-- filled by JS, rows 1–5 -->
-    </tbody>
-  </table>
-
-  <div class="page-footer">แบบ นร./กสศ.01 | ฉบับปรับปรุง 6 มีนาคม 2569 | กองทุนเพื่อความเสมอภาคทางการศึกษา (กสศ.)</div>
-</div><!-- /page1 -->
-
-
-<!-- ╔══════════════════════════════════════════╗
-     ║  PAGE 2  สมาชิก 6-10 + ข้อมูลครัวเรือน ║
-     ╚══════════════════════════════════════════╝ -->
-<div class="page" id="kss-page2">
-
-  <div class="page-badge">
-    <div class="badge-box">แบบ นร./กสศ.01 หน้า 2</div><br>
-    <span style="font-size:7.5pt">ฉบับปรับปรุง 6 มีนาคม 2569</span>
-  </div>
-
-  <!-- Member table page 2 (rows 6-10) -->
-  <table class="mem-table" style="margin-top:6mm" id="pdf-mem-table-2">
-    <thead>
-      <tr>
-        <th rowspan="2" style="width:5mm">คนที่</th>
-        <th rowspan="2" style="min-width:28mm">ชื่อ - นามสกุล</th>
-        <th rowspan="2" style="width:14mm">ความ<br>สัมพันธ์<br>กับ<br>นักเรียน</th>
-        <th rowspan="2" style="width:22mm">เลขประจำตัว<br>ประชาชน</th>
-        <th rowspan="2" style="width:14mm">การศึกษา<br>สูงสุด</th>
-        <th rowspan="2" style="width:8mm">อายุ</th>
-        <th style="width:10mm">มีความ<br>พิการ<br>ทางร่างกาย/<br>สติปัญญา</th>
-        <th style="width:10mm">มีโรค<br>เรื้อรัง<br>ยกเว้น ความ<br>ดัน/เบา<br>หวาน</th>
-        <th style="width:13mm">ค่าจ้าง<br>เงินเดือน</th>
-        <th style="width:13mm">อาชีพ<br>เกษตรกรรม<br>(หลังหัก<br>ต้นทุน)</th>
-        <th style="width:13mm">ธุรกิจ<br>ส่วนตัว<br>(หลังหัก<br>ต้นทุน)</th>
-        <th style="width:13mm">สวัสดิการ<br>จากรัฐ</th>
-        <th style="width:13mm">รายได้จาก<br>แหล่งอื่นๆ</th>
-        <th style="width:14mm">รายได้รวม<br>เฉลี่ย<br>ต่อเดือน</th>
-      </tr>
-    </thead>
-    <tbody id="pdf-mem-body-2">
-      <!-- filled by JS, rows 6–10 -->
-    </tbody>
-    <tfoot>
-      <tr class="income-total">
-        <td colspan="13" style="text-align:right;padding-right:3mm">รวมรายได้ครัวเรือน (รายการที่ 1 - 10)</td>
-        <td class="num" id="pdf-total-income">{{total_income}}</td>
-      </tr>
-      <tr class="income-avg">
-        <td colspan="13" style="text-align:right;padding-right:3mm">รายได้ครัวเรือนเฉลี่ยต่อคน (รวมรายได้ครัวเรือน หารด้วยจำนวนสมาชิกทั้งหมด จากข้อ 2)</td>
-        <td class="num" id="pdf-avg-income">{{avg_income}}</td>
-      </tr>
-    </tfoot>
-  </table>
-
-  <hr class="bold-div" style="margin-top:4mm">
-
-  <!-- Section 3 -->
-  <div class="sec-hd">3. ข้อมูลสถานะของครัวเรือน (ใส่เครื่องหมาย ✔ หน้าข้อที่ตรงกับความเป็นจริงและสัมพันธ์กับข้อมูลสมาชิกในครัวเรือน เลือกได้มากกว่า 1 คำตอบ)</div>
-
-  <!-- 3.1 -->
-  <div class="row-line" style="align-items:center">
-    <span class="fl">3.1 ครัวเรือนมีภาระพึ่งพิง</span>
-    <div class="radio-inline" style="flex:1">
-      <div class="r-item"><div class="r-circle" id="rc-burd0"></div>ครัวเรือนไม่มีภาระพึ่งพิง</div>
-      <div class="r-item"><div class="r-circle" id="rc-burd1"></div>ครัวเรือนมีภาระพึ่งพิง</div>
-    </div>
-  </div>
-  <div class="cb-inline" style="padding-left:8mm">
-    <div class="cb-item"><div class="cb-sq" id="cb-b1"></div>มีความพิการทางร่างกาย/สติปัญญา</div>
-    <div class="cb-item"><div class="cb-sq" id="cb-b2"></div>มีโรคเรื้อรัง ยกเว้น ความดัน/เบาหวาน</div>
-    <div class="cb-item"><div class="cb-sq" id="cb-b3"></div>ผู้สูงอายุตั้งแต่ 60 ปีขึ้นไป</div>
-    <div class="cb-item"><div class="cb-sq" id="cb-b4"></div>เป็นพ่อ/แม่เลี้ยงเดี่ยว</div>
-    <div class="cb-item"><div class="cb-sq" id="cb-b5"></div>มีคนอายุ 15-65 ปีที่ว่างงาน (ที่ไม่ใช่นักเรียน/นักศึกษา)</div>
-  </div>
-
-  <!-- 3.2 -->
-  <div class="row-line" style="align-items:center">
-    <span class="fl">3.2 การอยู่อาศัย</span>
-    <div class="radio-inline" style="flex:1">
-      <div class="r-item"><div class="r-circle" id="rc-h1"></div>อยู่บ้านตนเอง/เจ้าของบ้าน</div>
-      <div class="r-item"><div class="r-circle" id="rc-h2"></div>อยู่บ้านเช่า (เสียค่าเช่า) เดือนละ
-        <span style="border-bottom:1px solid #000;min-width:15mm;display:inline-block;text-align:center;margin:0 1mm" id="pdf-rent">{{rent}}</span> บาท
-      </div>
-      <div class="r-item"><div class="r-circle" id="rc-h3"></div>อยู่กับผู้อื่น/อยู่ฟรี</div>
-      <div class="r-item"><div class="r-circle" id="rc-h4"></div>หอพัก</div>
-    </div>
-  </div>
-
-  <div class="page-footer">แบบ นร./กสศ.01 | ฉบับปรับปรุง 6 มีนาคม 2569 | กองทุนเพื่อความเสมอภาคทางการศึกษา (กสศ.)</div>
-</div><!-- /page2 -->
-
-
-<!-- ╔══════════════════════════════════════════╗
-     ║  PAGE 3  ลักษณะที่อยู่อาศัย + ข้อ 4   ║
-     ╚══════════════════════════════════════════╝ -->
-<div class="page" id="kss-page3">
-
-  <div class="page-badge">
-    <div class="badge-box">แบบ นร./กสศ.01 หน้า 3</div><br>
-    <span style="font-size:7.5pt">ฉบับปรับปรุง 6 มีนาคม 2569</span>
-  </div>
-
-  <div style="margin-top:6mm"></div>
-
-  <!-- 3.3 -->
-  <div class="sec-hd">3.3 ลักษณะที่อยู่อาศัย (บันทึกสิ่งที่เห็น)</div>
-
-  <div class="row-line" style="align-items:center">
-    <span class="fl">วัสดุที่ใช้ทำ<u>พื้นบ้าน</u> (ที่ไม่ใช่ใต้ถุนบ้าน)</span>
-    <div class="cb-inline" style="flex:1">
-      <div class="cb-item"><div class="cb-sq" id="cb-fl1"></div>กระเบื้อง/เซรามิค</div>
-      <div class="cb-item"><div class="cb-sq" id="cb-fl2"></div>ปาเก้/ไม้ขัดเงา</div>
-      <div class="cb-item"><div class="cb-sq" id="cb-fl3"></div>ซีเมนต์เปลือย</div>
-      <div class="cb-item"><div class="cb-sq" id="cb-fl4"></div>ไม้กระดาน</div>
-    </div>
-  </div>
-  <div class="cb-inline" style="padding-left:8mm;margin-bottom:2mm">
-    <div class="cb-item"><div class="cb-sq" id="cb-fl5"></div>ไวนิล/กระเบื้องยาง/เสื่อน้ำมัน</div>
-    <div class="cb-item"><div class="cb-sq" id="cb-fl6"></div>ไม้ไผ่</div>
-    <div class="cb-item"><div class="cb-sq" id="cb-fl7"></div>ดิน/ทราย</div>
-    <div class="cb-item"><div class="cb-sq" id="cb-fl8"></div>อื่น ๆ</div>
-  </div>
-
-  <div class="row-line" style="align-items:center">
-    <span class="fl">วัสดุที่ใช้ทำ<u>ฝาบ้าน</u></span>
-    <div class="cb-inline" style="flex:1">
-      <div class="cb-item"><div class="cb-sq" id="cb-wl1"></div>ฉาบซีเมนต์</div>
-      <div class="cb-item"><div class="cb-sq" id="cb-wl2"></div>อิฐ/ก้อนปูน/อิฐบล็อก</div>
-      <div class="cb-item"><div class="cb-sq" id="cb-wl3"></div>สังกะสี</div>
-      <div class="cb-item"><div class="cb-sq" id="cb-wl4"></div>ไม้กระดาน</div>
-    </div>
-  </div>
-  <div class="cb-inline" style="padding-left:8mm;margin-bottom:2mm">
-    <div class="cb-item"><div class="cb-sq" id="cb-wl5"></div>ไม้อัด</div>
-    <div class="cb-item"><div class="cb-sq" id="cb-wl6"></div>สมาร์ทบอร์ด/ไฟเบอร์/ซีเมนต์บอร์ด</div>
-    <div class="cb-item"><div class="cb-sq" id="cb-wl7"></div>ไม้ไผ่/ท่อนไม้/เศษไม้</div>
-    <div class="cb-item"><div class="cb-sq" id="cb-wl8"></div>ดิน ไวนิล และอื่น ๆ</div>
-  </div>
-
-  <div class="row-line" style="align-items:center">
-    <span class="fl">วัสดุที่ใช้ทำ<u>หลังคา</u></span>
-    <div class="cb-inline" style="flex:1">
-      <div class="cb-item"><div class="cb-sq" id="cb-rf1"></div>โลหะ (เช่น สังกะสี/เหล็ก/อะลูมิเนียม)</div>
-      <div class="cb-item"><div class="cb-sq" id="cb-rf2"></div>กระเบื้อง/เซรามิค</div>
-      <div class="cb-item"><div class="cb-sq" id="cb-rf3"></div>ไม้กระดาน</div>
-    </div>
-  </div>
-  <div class="cb-inline" style="padding-left:8mm;margin-bottom:2mm">
-    <div class="cb-item"><div class="cb-sq" id="cb-rf4"></div>ใบไม้/วัสดุธรรมชาติ</div>
-    <div class="cb-item"><div class="cb-sq" id="cb-rf5"></div>ไวนิล/กระดาษ/แผ่นพลาสติก</div>
-    <div class="cb-item"><div class="cb-sq" id="cb-rf6"></div>อื่น ๆ</div>
-  </div>
-
-  <div class="row-line" style="align-items:center">
-    <span class="fl">มีห้องส้วมในที่อยู่อาศัย/บริเวณบ้าน</span>
-    <div class="radio-inline">
-      <div class="r-item"><div class="r-circle" id="rc-toilet1"></div>มี</div>
-      <div class="r-item"><div class="r-circle" id="rc-toilet2"></div>ไม่มี</div>
-    </div>
-  </div>
-
-  <!-- 3.4 -->
-  <div class="row-line" style="align-items:center;margin-top:1.5mm">
-    <span class="fl">3.4 ที่ดิน<u>ทำการเกษตรได้</u> (รวมเช่า)</span>
-    <div class="radio-inline">
-      <div class="r-item"><div class="r-circle" id="rc-ag0"></div>ไม่ทำเกษตร</div>
-      <div class="r-item"><div class="r-circle" id="rc-ag1"></div>ทำเกษตร [</div>
-      <div class="r-item"><div class="cb-sq" id="cb-ag1"></div>มีที่ดินน้อยกว่า 1 ไร่</div>
-      <div class="r-item"><div class="cb-sq" id="cb-ag2"></div>มีที่ดิน 1 ถึง 5 ไร่</div>
-      <div class="r-item"><div class="cb-sq" id="cb-ag3"></div>มีที่ดินมากกว่า 5 ไร่ ]</div>
-    </div>
-  </div>
-
-  <!-- 3.5 -->
-  <div class="row-line" style="align-items:center">
-    <span class="fl">3.5 แหล่งน้ำดื่ม</span>
-    <div class="cb-inline" style="flex:1">
-      <div class="cb-item"><div class="cb-sq" id="cb-wt1"></div>น้ำดื่มบรรจุขวด/ตู้หยอดน้ำ</div>
-      <div class="cb-item"><div class="cb-sq" id="cb-wt2"></div>น้ำประปา</div>
-      <div class="cb-item"><div class="cb-sq" id="cb-wt3"></div>น้ำบ่อ/น้ำบาดาล</div>
-      <div class="cb-item"><div class="cb-sq" id="cb-wt4"></div>น้ำฝน/น้ำประปาภูเขา/ลำธาร</div>
-    </div>
-  </div>
-
-  <!-- 3.6 -->
-  <div class="row-line" style="align-items:center">
-    <span class="fl">3.6 แหล่งไฟฟ้า</span>
-    <div class="radio-inline" style="flex:1">
-      <div class="r-item"><div class="r-circle" id="rc-el0"></div>ไม่มีไฟฟ้า/ไม่มีเครื่องกำเนิดไฟฟ้าชนิดอื่น ๆ</div>
-      <div class="r-item"><div class="r-circle" id="rc-el1"></div>มีไฟฟ้า [
-        <div class="cb-sq" id="cb-el1" style="margin:0 1mm"></div>เครื่องปั่นไฟ/โซลาเซลล์
-        <div class="cb-sq" id="cb-el2" style="margin:0 1mm"></div>ไฟต่อพ่วง/แบตเตอรี่
-        <div class="cb-sq" id="cb-el3" style="margin:0 1mm"></div>ไฟบ้านหรือมิเตอร์ ]
-      </div>
-    </div>
-  </div>
-
-  <!-- 3.7 -->
-  <div class="row-line" style="align-items:center">
-    <span class="fl">3.7 ยานพาหนะในครัวเรือน (ที่ใช้งานได้)</span>
-    <div class="radio-inline">
-      <div class="r-item"><div class="r-circle" id="rc-veh0"></div>ไม่มียานพาหนะในครัวเรือน</div>
-      <div class="r-item"><div class="r-circle" id="rc-veh1"></div>มียานพาหนะในครัวเรือน</div>
-    </div>
-  </div>
-  <div style="padding-left:8mm;font-size:8.5pt">
-    <div class="row-line" style="align-items:center;margin-bottom:1mm">
-      <div class="cb-item"><div class="cb-sq" id="cb-veh1"></div>รถยนต์นั่งส่วนบุคคล</div>
-      <span style="margin-left:3mm">[</span>
-      <div class="cb-item" style="margin-left:2mm"><div class="cb-sq" id="cb-veh1a"></div>อายุเกิน 15 ปี</div>
-      <div class="cb-item"><div class="cb-sq" id="cb-veh1b"></div>ไม่เกิน 15 ปี ]</div>
-    </div>
-    <div class="row-line" style="align-items:center;margin-bottom:1mm">
-      <div class="cb-item"><div class="cb-sq" id="cb-veh2"></div>รถปิกอัพ/รถบรรทุกเล็ก/รถตู้</div>
-      <span style="margin-left:3mm">[</span>
-      <div class="cb-item" style="margin-left:2mm"><div class="cb-sq" id="cb-veh2a"></div>อายุเกิน 15 ปี</div>
-      <div class="cb-item"><div class="cb-sq" id="cb-veh2b"></div>ไม่เกิน 15 ปี ]</div>
-    </div>
-    <div class="row-line" style="align-items:center;margin-bottom:1mm">
-      <div class="cb-item"><div class="cb-sq" id="cb-veh3"></div>รถไถ/รถเกี่ยวข้าว/รถประเภทเดียวกัน</div>
-      <span style="margin-left:3mm">[</span>
-      <div class="cb-item" style="margin-left:2mm"><div class="cb-sq" id="cb-veh3a"></div>อายุเกิน 15 ปี</div>
-      <div class="cb-item"><div class="cb-sq" id="cb-veh3b"></div>ไม่เกิน 15 ปี ]</div>
-    </div>
-    <div class="cb-item"><div class="cb-sq" id="cb-veh4"></div>รถมอเตอร์ไซต์/เรือประมงพื้นบ้าน (ขนาดเล็ก)</div>
-  </div>
-
-  <!-- 3.8 -->
-  <div class="row-line" style="align-items:center;margin-top:1.5mm">
-    <span class="fl">3.8 ของใช้ในครัวเรือน (ที่ใช้งานได้)</span>
-    <div class="radio-inline">
-      <div class="r-item"><div class="r-circle" id="rc-hh0"></div>ไม่มีของใช้ดังกล่าว</div>
-      <div class="r-item"><div class="r-circle" id="rc-hh1"></div>มีของใช้ดังกล่าว</div>
-    </div>
-  </div>
-  <div class="cb-inline" style="padding-left:8mm">
-    <div class="cb-item"><div class="cb-sq" id="cb-hh1"></div>คอมพิวเตอร์</div>
-    <div class="cb-item"><div class="cb-sq" id="cb-hh2"></div>แอร์</div>
-    <div class="cb-item"><div class="cb-sq" id="cb-hh3"></div>ทีวีจอแบน</div>
-    <div class="cb-item"><div class="cb-sq" id="cb-hh4"></div>เครื่องซักผ้า</div>
-    <div class="cb-item"><div class="cb-sq" id="cb-hh5"></div>ตู้เย็น</div>
-  </div>
-
-  <hr class="bold-div" style="margin-top:3mm">
-
-  <!-- Section 4 สถาบัน -->
-  <div class="sec-hd">4. ข้อมูลทั่วไปของสถาบัน <span style="font-weight:400;font-size:8pt">ตอบส่วนนี้เฉพาะกรณีนักเรียนอาศัยอยู่ใน<u>ครัวเรือนสถาบัน</u></span></div>
-  <div class="row-line" style="align-items:center">
-    <span class="fl">ประเภทสถาบัน</span>
-    <div class="radio-inline" style="flex:1">
-      <div class="r-item"><div class="r-circle" id="rc-inst1"></div>สถานสงเคราะห์ของรัฐบาล
-        ( <div class="cb-sq" id="cb-inst1" style="margin:0 1mm"></div>จดทะเบียน
-          <div class="cb-sq" id="cb-inst2" style="margin:0 1mm"></div>ไม่จดทะเบียน )
-      </div>
-      <div class="r-item"><div class="r-circle" id="rc-inst2"></div>มูลนิธิ/สถานสงเคราะห์เอกชน
-        ( <div class="cb-sq" id="cb-inst3" style="margin:0 1mm"></div>จดทะเบียน
-          <div class="cb-sq" id="cb-inst4" style="margin:0 1mm"></div>ไม่จดทะเบียน )
-      </div>
-      <div class="r-item"><div class="r-circle" id="rc-inst3"></div>วัด/ศาสนสถาน</div>
-      <div class="r-item"><div class="r-circle" id="rc-inst4"></div>อื่นๆ</div>
-    </div>
-  </div>
-  <div class="row-line">
-    <span class="fl">ชื่อสถาบัน</span><span class="fv w60" id="pdf-instname">{{inst_name}}</span>
-    <span class="fl">จังหวัด</span><span class="fv w30" id="pdf-instprov">{{inst_province}}</span>
-  </div>
-  <div class="row-line">
-    <span class="fl">ชื่อผู้รับผิดชอบสถาบัน</span><span class="fv w50" id="pdf-insthead">{{inst_head}}</span>
-    <span class="fl">เบอร์โทรศัพท์</span><span class="fv w30" id="pdf-instphone">{{inst_phone}}</span>
-  </div>
-  <div class="row-line" style="align-items:center">
-    <span>นักเรียนรายนี้อยู่กับสถาบันตั้งแต่เดือน</span>
-    <span class="fv" style="min-width:18mm;flex:0 0 18mm;margin:0 1mm" id="pdf-inst-since-month">{{inst_since_month}}</span>
-    <span>ปี พ.ศ.</span>
-    <span class="fv" style="min-width:12mm;flex:0 0 12mm;margin:0 1mm" id="pdf-inst-since-year">{{inst_since_year}}</span>
-    <span>พักอาศัยในสถาบันแบบ</span>
-    <div class="radio-inline" style="margin-left:2mm">
-      <div class="r-item"><div class="r-circle" id="rc-stay1"></div>ประจำไม่ไปกลับ</div>
-      <div class="r-item"><div class="r-circle" id="rc-stay2"></div>ไปกลับบ้านเสาร์-อาทิตย์/ช่วงปิดภาคเรียน</div>
-    </div>
-  </div>
-
-  <div class="page-footer">แบบ นร./กสศ.01 | ฉบับปรับปรุง 6 มีนาคม 2569 | กองทุนเพื่อความเสมอภาคทางการศึกษา (กสศ.)</div>
-</div><!-- /page3 -->
-
-
-<!-- ╔══════════════════════════════════════════╗
-     ║  PAGE 4  การเดินทาง + รูปภาพ           ║
-     ╚══════════════════════════════════════════╝ -->
-<div class="page" id="kss-page4">
-
-  <div class="page-badge">
-    <div class="badge-box">แบบ นร./กสศ.01 หน้า 4</div><br>
-    <span style="font-size:7.5pt">ฉบับปรับปรุง 6 มีนาคม 2569</span>
-  </div>
-
-  <div style="margin-top:6mm"></div>
-
-  <!-- Section 5 -->
-  <div class="sec-hd">5. การเดินทางจากที่พักอาศัยไปโรงเรียน</div>
-  <div class="row-line" style="align-items:center">
-    <span class="fl">วิธีเดินทางหลัก</span>
-    <div class="radio-inline" style="flex:1">
-      <div class="r-item"><div class="r-circle" id="rc-tr1"></div>เดิน</div>
-      <div class="r-item"><div class="r-circle" id="rc-tr2"></div>จักรยาน</div>
-      <div class="r-item"><div class="r-circle" id="rc-tr3"></div>รถโรงเรียน</div>
-      <div class="r-item"><div class="r-circle" id="rc-tr4"></div>จักรยานยนต์ส่วนตัว</div>
-      <div class="r-item"><div class="r-circle" id="rc-tr5"></div>รถส่วนตัว</div>
-      <div class="r-item"><div class="r-circle" id="rc-tr6"></div>เรือส่วนตัว</div>
-    </div>
-  </div>
-  <div class="radio-inline" style="padding-left:26mm;margin-bottom:2mm">
-    <div class="r-item"><div class="r-circle" id="rc-tr7"></div>จักรยานยนต์รับจ้าง</div>
-    <div class="r-item"><div class="r-circle" id="rc-tr8"></div>รถโดยสารประจำทาง/รับจ้าง</div>
-    <div class="r-item"><div class="r-circle" id="rc-tr9"></div>เรือโดยสารประจำทาง/รับจ้าง</div>
-  </div>
-
-  <!-- Distance boxes -->
-  <div class="row-line" style="align-items:center">
-    <span class="fl">ระยะทางจากบ้านถึงโรงเรียน</span>
-    <span style="border:1px solid #000;padding:0.5mm 2mm;min-width:8mm;display:inline-block;text-align:center;margin:0 1mm" id="pdf-km1">{{travel_km_int}}</span>
-    <span>.</span>
-    <span style="border:1px solid #000;padding:0.5mm 2mm;min-width:6mm;display:inline-block;text-align:center;margin:0 1mm" id="pdf-km2">{{travel_km_dec}}</span>
-    <span>กิโลเมตร (ไป-กลับ / วัน) ใช้เวลา</span>
-    <span style="border:1px solid #000;padding:0.5mm 2mm;min-width:7mm;display:inline-block;text-align:center;margin:0 1mm" id="pdf-th">{{travel_hour}}</span>
-    <span>:</span>
-    <span style="border:1px solid #000;padding:0.5mm 2mm;min-width:7mm;display:inline-block;text-align:center;margin:0 1mm" id="pdf-tm">{{travel_min}}</span>
-    <span>ชั่วโมง (ไป-กลับ / วัน)</span>
-  </div>
-  <div class="row-line">
-    <span class="fl">ค่าใช้จ่ายในการเดินทางไป-กลับ</span>
-    <span class="fv w20" style="text-align:center" id="pdf-tcost">{{travel_cost}}</span>
-    <span>บาท/เดือน</span>
-    <span class="fl" style="margin-left:4mm">นักเรียนได้เงินมาโรงเรียน (ไม่รวมค่าเดินทาง)</span>
-    <span class="fv w20" style="text-align:center" id="pdf-tmoney">{{std_money}}</span>
-    <span>บาท/วัน</span>
-  </div>
-
-  <hr class="hdiv">
-
-  <!-- Section 6 -->
-  <div class="sec-hd">6. ที่ตั้งที่พักอาศัยนักเรียน ในปัจจุบัน</div>
-  <div class="row-line">
-    <span class="fl">บ้านเลขที่</span><span class="fv w25" id="pdf-ano">{{addr_no}}</span>
-    <span class="fl">หมู่ที่</span><span class="fv w15" id="pdf-amoo">{{addr_moo}}</span>
-    <span class="fl">ตรอก/ซอย</span><span class="fv w30" id="pdf-asoi">{{addr_soi}}</span>
-    <span class="fl">ถนน</span><span class="fv w35" id="pdf-aroad">{{addr_road}}</span>
-  </div>
-  <div class="row-line">
-    <span class="fl">ตำบล/แขวง</span><span class="fv w30" id="pdf-atambon">{{addr_tambon}}</span>
-    <span class="fl">อำเภอ/เขต</span><span class="fv w30" id="pdf-aamphoe">{{addr_amphoe}}</span>
-    <span class="fl">จังหวัด</span><span class="fv w25" id="pdf-aprov">{{addr_province}}</span>
-    <span class="fl">รหัสไปรษณีย์</span><span class="fv w15" id="pdf-azip">{{addr_zip}}</span>
-  </div>
-
-  <hr class="hdiv">
-
-  <!-- Section 7 -->
-  <div class="sec-hd">7. ภาพถ่ายที่พักอาศัยของนักเรียนในปัจจุบัน</div>
-  <div class="row-line" style="align-items:center">
-    <span class="fl">ภาพที่พักอาศัยของนักเรียนได้มาจาก</span>
-    <div class="radio-inline">
-      <div class="r-item"><div class="r-circle" id="rc-ps1"></div>คุณครูลงเยี่ยมบ้านด้วยตนเอง</div>
-      <div class="r-item"><div class="r-circle" id="rc-ps2"></div>ให้นักเรียนถ่ายภาพมาให้</div>
-    </div>
-  </div>
-  <div class="row-line" style="align-items:center">
-    <span class="fl">ประเภทภาพถ่าย</span>
-    <div class="radio-inline">
-      <div class="r-item"><div class="r-circle" id="rc-pt1"></div>ภาพถ่ายที่พักอาศัย/หอพัก ของนักเรียน</div>
-      <div class="r-item"><div class="r-circle" id="rc-pt2"></div>ภาพถ่ายครัวเรือนสถาบัน</div>
-    </div>
-  </div>
-  <div class="row-line" style="align-items:center">
-    <div class="r-item"><div class="r-circle" id="rc-pt3"></div>ภาพถ่ายนักเรียนคู่กับป้ายโรงเรียน (โปรดระบุสาเหตุ)</div>
-    <div class="cb-inline" style="margin-left:3mm">
-      <div class="cb-item"><div class="cb-sq" id="cb-ph1"></div>ที่พักอาศัยอยู่ต่างจังหวัด</div>
-      <div class="cb-item"><div class="cb-sq" id="cb-ph2"></div>ที่พักอาศัยอยู่ต่างประเทศ</div>
-      <div class="cb-item"><div class="cb-sq" id="cb-ph3"></div>ไม่อนุญาตให้ถ่ายภาพที่พักอาศัย</div>
-    </div>
-  </div>
-
-  <!-- Photo pair -->
-  <div class="photo-pair">
-    <div>
-      <div class="photo-slot-label">รูปที่ 1 ภาพถ่ายนอกที่พักอาศัยนักเรียน</div>
-      <div class="photo-slot" id="pdf-photo-out" style="min-height:40mm">
-        <span style="z-index:1;text-align:center;padding:3mm;font-size:8pt">กรุณาถ่ายให้เห็น<br>หลังคาและฝาผนังของที่พักอาศัยทั้งหลัง</span>
-      </div>
-    </div>
-    <div>
-      <div class="photo-slot-label">รูปที่ 2 ภาพถ่ายภายในที่พักอาศัยนักเรียน</div>
-      <div class="photo-slot" id="pdf-photo-in" style="min-height:40mm">
-        <span style="z-index:1;text-align:center;padding:3mm;font-size:8pt">กรุณาถ่ายให้เห็น<br>พื้นและบริเวณภายในของที่พักอาศัย</span>
-      </div>
-    </div>
-  </div>
-  <p style="font-size:7.5pt;font-style:italic;color:#444;margin-top:1.5mm">หมายเหตุ : กรณีที่พักอาศัยอยู่ต่างจังหวัด/ต่างประเทศหรือไม่ได้รับอนุญาตให้ถ่ายภาพ อนุโลมให้ถ่ายภาพนักเรียนคู่กับป้ายชื่อสถานศึกษาแทน</p>
-
-  <hr class="hdiv" style="margin-top:3mm">
-
-  <!-- Section 8 การรับรอง -->
-  <div class="sec-hd">8. การรับรองข้อมูล</div>
-  <div class="cb-inline">
-    <div class="cb-item"><div class="cb-sq" id="cb-cert8"></div>
-      <span>ข้าพเจ้าขอให้การรับรองว่าข้อมูลในข้อ 1 ถึงข้อ 7 ของแบบขอรับเงินอุดหนุนนักเรียนยากจนฉบับนี้ เป็นข้อมูลที่ถูกต้องของข้าพเจ้าจริง</span>
-    </div>
-  </div>
-  <p style="font-size:7.5pt;font-style:italic;color:#333;margin:1.5mm 0">
-    <em>หมายเหตุ : ครูผู้สำรวจ/เยี่ยมบ้านเก็บข้อมูลแบบขอรับเงินอุดหนุนนักเรียนยากจนไม่มีส่วนเกี่ยวข้องกับการพิจารณาคัดกรองความยากจน หากผู้ปกครองมีข้อสงสัยสามารถติดต่อได้ที่กสศ.</em>
-  </p>
-
-  <!-- Section 9 PDPA -->
-  <div class="sec-hd">9. ข้อมูลส่วนบุคคล</div>
-  <div class="cb-inline">
-    <div class="cb-item"><div class="cb-sq" id="cb-pdpa"></div>
-      <span style="font-size:8pt">ข้าพเจ้ารับทราบว่า การเก็บรวบรวม ใช้ เปิดเผย เผยแพร่ หรือกระทำการใดต่อข้อมูลส่วนบุคคลของข้าพเจ้า กสศ. ได้กระทำโดยชอบด้วยกฎหมายเพื่อการดำเนินงานตาม พ.ร.บ.กองทุนเพื่อความเสมอภาคทางการศึกษา พ.ศ. 2561 รวมถึงรับทราบนโยบายการคุ้มครองข้อมูลส่วนบุคคลของ กสศ. ที่ได้ประกาศผ่านเว็บไซต์ของ กสศ. (www.eef.or.th)</span>
-    </div>
-  </div>
-
-  <div class="page-footer">แบบ นร./กสศ.01 | ฉบับปรับปรุง 6 มีนาคม 2569 | กองทุนเพื่อความเสมอภาคทางการศึกษา (กสศ.)</div>
-</div><!-- /page4 -->
-
-
-<!-- ╔══════════════════════════════════════════╗
-     ║  PAGE 5  ลายเซ็น + รับรองเจ้าหน้าที่  ║
-     ╚══════════════════════════════════════════╝ -->
-<div class="page" id="kss-page5">
-
-  <div class="page-badge">
-    <div class="badge-box">แบบ นร./กสศ.01 หน้า 5</div><br>
-    <span style="font-size:7.5pt">ฉบับปรับปรุง 6 มีนาคม 2569</span>
-  </div>
-
-  <div style="margin-top:6mm"></div>
-
-  <!-- Sig 1 & 2 -->
-  <div style="display:grid;grid-template-columns:1fr 1fr;gap:8mm;margin-bottom:5mm">
-    <!-- นักเรียน -->
-    <div style="text-align:center">
-      <div class="sig-canvas-box" id="pdf-sig1-box">
-        <!-- sig img injected by JS -->
-      </div>
-      <div class="sig-line">
-        ลงชื่อ .....................................นักเรียน<br>
-        ( <span id="pdf-sig1-name">{{sig1_name}}</span> )<br>
-        <span style="font-size:7.5pt;font-style:italic">นักเรียนที่มีอายุเกิน 10 ปี ให้ลงนามส่วนนี้ด้วย</span><br>
-        <span style="font-size:7.5pt;font-style:italic">หากอายุไม่ถึงให้ผู้ปกครองลงนามยินยอมและรับรองข้อมูลแทนได้</span>
-      </div>
-    </div>
-    <!-- ผู้ปกครอง -->
-    <div style="text-align:center">
-      <div class="sig-canvas-box" id="pdf-sig2-box"></div>
-      <div class="sig-line">
-        ลงชื่อ .....................................ผู้ปกครอง<br>
-        ( <span id="pdf-sig2-name">{{sig2_name}}</span> )
-      </div>
-    </div>
-  </div>
-
-  <hr class="bold-div">
-
-  <!-- Section 10 ครูเยี่ยมบ้าน + เจ้าหน้าที่ -->
-  <div style="display:grid;grid-template-columns:1fr 1fr;gap:5mm;margin-top:3mm">
-
-    <!-- ครูผู้เยี่ยมบ้าน -->
-    <div style="border:1px solid #aaa;padding:3mm">
-      <p style="font-size:8.5pt;margin-bottom:2mm">ครูผู้เยี่ยมบ้าน/สำรวจข้อมูล</p>
-      <p style="font-size:8pt;margin-bottom:2mm">ได้แจ้งวัตถุประสงค์การขอข้อมูลตามแบบขอรับเงินอุดหนุนนักเรียนยากจนแก่ผู้ให้ข้อมูลเรียบร้อยแล้วและขอรับรองว่าข้อมูลถูกต้อง ครบถ้วน และเป็นข้อมูลของนักเรียนจริง</p>
-      <div class="sig-canvas-box" id="pdf-sig3-box" style="height:16mm"></div>
-      <div class="sig-line">
-        ลงชื่อ .................................................<br>
-        ( <span id="pdf-sig3-name">{{sig3_name}}</span> )<br>
-        ตำแหน่ง ( <span id="pdf-sig3-pos">{{sig3_pos}}</span> )
-      </div>
+    
+    <div class="sec-hd">1. ข้อมูลนักเรียน</div>
+    <p>ชื่อ-นามสกุลนักเรียน: <span id="pdf-fullname" style="border-bottom:1px dashed #000; padding:0 10px;">-</span></p>
     </div>
 
-    <!-- เจ้าหน้าที่รัฐ -->
-    <div style="border:1px solid #aaa;padding:3mm">
-      <div class="sec-hd" style="margin-top:0">10. การรับรองข้อมูลโดยเจ้าหน้าที่ของรัฐ</div>
-      <div class="row-line">
-        <span class="fl">ข้าพเจ้า</span>
-        <span class="fv" id="pdf-sig4-name">{{sig4_name}}</span>
-      </div>
-      <div class="row-line">
-        <span class="fl">เลขประจำตัวประชาชน</span>
-        <div class="id-boxes" id="pdf-sig4-id-boxes"></div>
-      </div>
-      <div class="row-line">
-        <span class="fl">ตำแหน่ง</span>
-        <span class="fv" id="pdf-sig4-pos">{{sig4_pos}}</span>
-      </div>
-      <div class="cb-inline" style="margin:1.5mm 0">
-        <div class="cb-item"><div class="cb-sq" id="cb-cert-yes"></div>ขอรับรองว่าข้อมูลการขาดแคลนทุนทรัพย์ฯ ถูกต้อง ครบถ้วน เป็นจริง และเห็นควรให้พิจารณาขอรับเงินอุดหนุน</div>
-      </div>
-      <div class="cb-inline" style="margin-bottom:2mm">
-        <div class="cb-item"><div class="cb-sq" id="cb-cert-no"></div>ไม่ขอรับรอง เนื่องจาก <span class="fv" style="min-width:30mm;display:inline-block" id="pdf-cert-reason">{{cert_reason}}</span></div>
-      </div>
-      <div class="sig-canvas-box" id="pdf-sig4-box" style="height:16mm"></div>
-      <div class="sig-line">
-        ลงชื่อ ................................................เจ้าหน้าที่ของรัฐ<br>
-        ( <span id="pdf-sig4-name2">{{sig4_name}}</span> )
-      </div>
-    </div>
-  </div>
+</div>
 
-  <hr class="hdiv" style="margin-top:4mm">
-
-  <!-- ผู้อำนวยการ -->
-  <div style="margin-top:3mm">
-    <p style="font-size:8.5pt;margin-bottom:2mm">ข้าพเจ้า ผู้อำนวยการโรงเรียน ขอรับรองว่าข้อมูลข้างต้นเป็นข้อมูลของนักเรียนจริง และมีสถานภาพเป็นนักเรียนในสถานศึกษาจริง</p>
-    <div style="display:grid;grid-template-columns:1fr 1fr;gap:5mm">
-      <div>
-        <div class="sig-canvas-box" id="pdf-sig5-box" style="height:16mm"></div>
-        <div class="sig-line">
-          ลงชื่อ ............................................ผู้อำนวยการสถานศึกษา<br>
-          ( <span id="pdf-sig5-name">{{sig5_name}}</span> )
-        </div>
-      </div>
-      <div style="font-size:8.5pt;border:1px solid #ccc;padding:3mm">
-        <div class="row-line"><span class="fl">ผู้บันทึกข้อมูล</span><span class="fv" id="pdf-recorder">{{recorder}}</span></div>
-        <div class="row-line"><span class="fl">บันทึกข้อมูลวันที่</span><span class="fv" id="pdf-record-date">{{record_date}}</span></div>
-        <div class="row-line"><span class="fl">วันที่พิมพ์เอกสาร</span><span class="fv" id="pdf-print-date">{{print_date}}</span></div>
-        <p style="font-size:7pt;color:#666;margin-top:2mm">* ข้อมูลผู้บันทึกในระบบจะขึ้นอัตโนมัติ ไม่ต้องกรอกข้อมูลส่วนนี้</p>
-      </div>
-    </div>
-  </div>
-
-  <hr class="hdiv" style="margin-top:4mm">
-
-  <p style="font-size:7.5pt;text-align:center;color:#444;line-height:1.7">
-    กสศ. เป็นหน่วยงานของรัฐ จัดตั้งขึ้นตาม พ.ร.บ. กองทุนเพื่อความเสมอภาคทางการศึกษา พ.ศ. 2561<br>
-    ตั้งอยู่เลขที่ 388 อาคาร เอส. พี. ชั้น 13 ถนนพหลโยธิน แขวงสามเสนใน เขตพญาไท กรุงเทพฯ 10400<br>
-    โทร 02-079-5475 กด 1 | Email: contact@eef.or.th
-  </p>
-
-  <div class="page-footer">แบบ นร./กสศ.01 | ฉบับปรับปรุง 6 มีนาคม 2569 | กองทุนเพื่อความเสมอภาคทางการศึกษา (กสศ.)</div>
-</div><!-- /page5 -->
-
-
-<!-- ════════════════════════════════════════════
-     RENDER ENGINE — เรียกใช้จาก index.html
-════════════════════════════════════════════ -->
 <script>
-/**
- * fillKSS01(data)
- * data = object จาก collectFormData() ใน index.html
- * ใช้เรียกก่อน export PDF
- */
-function fillKSS01(d) {
-  const set = (id, v) => { const el=document.getElementById(id); if(el) el.textContent=v||''; };
-  const src = (id, url) => {
-    const el=document.getElementById(id);
-    if (!el) return;
-    if (url && url.length > 50) { el.innerHTML=''; const img=document.createElement('img'); img.src=url; img.style.cssText='width:100%;height:100%;object-fit:cover;position:absolute;inset:0'; el.appendChild(img); }
-  };
-  const sigImg = (boxId, b64) => {
-    const el=document.getElementById(boxId);
-    if (!el) return;
-    el.innerHTML = b64 && b64.length>50
-      ? `<img src="${b64}" style="max-height:100%;max-width:100%">`
-      : '';
-  };
-  const fillId = (containerId, val) => {
-    const el=document.getElementById(containerId);
-    if (!el) return;
-    const clean=(val||'').replace(/[^0-9a-zA-Z]/g,'');
-    const segs=[1,4,5,2,1]; // Thai ID: x-xxxx-xxxxx-xx-x
-    let i=0; let html='<div class="id-seg">';
-    segs.forEach((len,si) => {
-      for(let j=0;j<len;j++){html+=`<div class="id-box">${clean[i]||''}</div>`;i++;}
-      if(si<segs.length-1) html+='</div><span class="id-dash">-</span><div class="id-seg">';
+// ฟังก์ชันลูปใส่ตัวเลขบัตรประชาชนลงกล่องแบบสากลและเสถียรที่สุด
+function renderIdToBoxes(containerId, idString) {
+    const container = document.getElementById(containerId);
+    if (!container) return;
+    
+    // กรองเอาเฉพาะตัวเลข 13 หลัก
+    const cleanId = String(idString || '').replace(/[^0-9]/g, '');
+    const boxes = container.querySelectorAll('.id-box');
+    
+    boxes.forEach((box, index) => {
+        if (cleanId[index]) {
+            box.textContent = cleanId[index];
+        } else {
+            box.textContent = ''; // ล้างค่าหากข้อมูลไม่ถึง
+        }
     });
-    html+='</div>';
-    el.innerHTML=html;
-  };
-  const radio = (ids, value, map) => {
-    ids.forEach(id => { const el=document.getElementById(id); if(el) el.classList.remove('filled'); });
-    const key=map[value];
-    if(key){ const el=document.getElementById(key); if(el) el.classList.add('filled'); }
-  };
-  const checkOn = (id) => { const el=document.getElementById(id); if(el) el.textContent='✔'; };
-
-  // ── Page 1 ────────────────────────────────
-  set('pdf-school',    d.school);
-  set('pdf-affil',     d.affiliation);
-  set('pdf-fname',     d.std_fname);
-  set('pdf-lname',     d.std_lname);
-  set('pdf-class',     d.std_class);
-  fillId('pdf-id-boxes', d.std_id);
-  fillId('pdf-gid-boxes', d.grd_id);
-  set('pdf-gfname',    d.grd_fname);
-  set('pdf-glname',    d.grd_lname);
-  set('pdf-grel',      d.grd_rel);
-  set('pdf-gedu',      d.grd_edu);
-  set('pdf-gjob',      d.grd_job);
-  set('pdf-gphone',    d.grd_phone);
-  if(d.welfare) checkOn('cb-welfare');
-  if(d.no_grd_id) checkOn('cb-noid');
-  src('pdf-photo-student', d.photos?.prev_student);
-
-  radio(['rc-f1','rc-f2','rc-f3','rc-f4','rc-f5','rc-f6','rc-f7'], d.family_status, {
-    'พ่อแม่อยู่ด้วยกัน':'rc-f1','พ่อแม่แยกกันอยู่':'rc-f2','พ่อแม่หย่าร้าง':'rc-f3',
-    'พ่อเสียชีวิต/สาบสูญ':'rc-f4','แม่เสียชีวิต/สาบสูญ':'rc-f5','เสียชีวิตทั้งคู่':'rc-f6','พ่อแม่ทอดทิ้ง':'rc-f7'
-  });
-  radio(['rc-l1','rc-l2','rc-l3','rc-l4','rc-l5'], d.live_with, {
-    'พ่อ/แม่':'rc-l1','ญาติ':'rc-l2','อยู่ลำพัง':'rc-l3','ผู้อุปการะ/นายจ้าง':'rc-l4','ครัวเรือนสถาบัน':'rc-l5'
-  });
-
-  // ── Members ───────────────────────────────
-  set('pdf-memcount', (d.members||[]).length);
-  const memRows = (d.members||[]);
-  const buildMemRow = (m, n) => `
-    <tr>
-      <td>${n}</td>
-      <td class="name-cell">${m.name||''}</td>
-      <td>${m.rel||''}</td>
-      <td>${m.pid||''}</td>
-      <td>${m.edu||''}</td>
-      <td>${m.age||''}</td>
-      <td>${m.disabled?'✔':''}</td>
-      <td>${m.chronic?'✔':''}</td>
-      <td class="num">${m.wage||''}</td>
-      <td class="num">${m.agri||''}</td>
-      <td class="num">${m.biz||''}</td>
-      <td class="num">${m.welf||''}</td>
-      <td class="num">${m.other||''}</td>
-      <td class="num">${m.total||''}</td>
-    </tr>`;
-  const blankRow = (n) => `<tr>${'<td>&nbsp;</td>'.repeat(1)}<td class="name-cell">&nbsp;</td>${'<td>&nbsp;</td>'.repeat(12)}</tr>`.replace('<td>&nbsp;</td>', `<td>${n}</td>`);
-
-  const body1 = document.getElementById('pdf-mem-body-1');
-  const body2 = document.getElementById('pdf-mem-body-2');
-  if(body1){ body1.innerHTML=''; for(let i=0;i<5;i++) body1.innerHTML += memRows[i]?buildMemRow(memRows[i],i+1):blankRow(i+1); }
-  if(body2){ body2.innerHTML=''; for(let i=5;i<10;i++) body2.innerHTML += memRows[i]?buildMemRow(memRows[i],i+1):blankRow(i+1); }
-
-  set('pdf-total-income', d.total_income);
-  set('pdf-avg-income',   d.avg_income);
-
-  // ── Page 2 section 3 ──────────────────────
-  radio(['rc-burd0','rc-burd1'], d.burden, {'ไม่มีภาระพึ่งพิง':'rc-burd0','มีภาระพึ่งพิง':'rc-burd1'});
-  (d.burden_type||[]).forEach(v => {
-    const m={'พิการ':'cb-b1','โรคเรื้อรัง':'cb-b2','ผู้สูงอายุ':'cb-b3','แม่เลี้ยงเดี่ยว':'cb-b4','ว่างงาน':'cb-b5'};
-    if(m[v]) checkOn(m[v]);
-  });
-  radio(['rc-h1','rc-h2','rc-h3','rc-h4'], d.housing, {
-    'บ้านตนเอง/เจ้าของบ้าน':'rc-h1','บ้านเช่า':'rc-h2','อยู่กับผู้อื่น/อยู่ฟรี':'rc-h3','หอพัก':'rc-h4'
-  });
-  set('pdf-rent', d.rent||'');
-
-  // ── Page 3 ────────────────────────────────
-  const flMap={'กระเบื้อง/เซรามิค':'cb-fl1','ปาเก้/ไม้ขัดเงา':'cb-fl2','ซีเมนต์เปลือย':'cb-fl3','ไม้กระดาน':'cb-fl4','ไวนิล/กระเบื้องยาง':'cb-fl5','ไม้ไผ่':'cb-fl6','ดิน/ทราย':'cb-fl7','อื่น ๆ':'cb-fl8'};
-  const wlMap={'ฉาบซีเมนต์':'cb-wl1','อิฐ/ก้อนปูน/อิฐบล็อก':'cb-wl2','สังกะสี':'cb-wl3','ไม้กระดาน':'cb-wl4','ไม้อัด':'cb-wl5','สมาร์ทบอร์ด/ไฟเบอร์/ซีเมนต์บอร์ด':'cb-wl6','ไม้ไผ่/ท่อนไม้/เศษไม้':'cb-wl7','ดิน/ไวนิล':'cb-wl8'};
-  const rfMap={'โลหะ (สังกะสี/เหล็ก/อะลูมิเนียม)':'cb-rf1','กระเบื้อง/เซรามิค':'cb-rf2','ไม้กระดาน':'cb-rf3','ใบไม้/วัสดุธรรมชาติ':'cb-rf4','ไวนิล/กระดาษ/แผ่นพลาสติก':'cb-rf5','อื่น ๆ':'cb-rf6'};
-  (d.floor_mat||[]).forEach(v=>{ if(flMap[v]) checkOn(flMap[v]); });
-  (d.wall_mat||[]).forEach(v=>{ if(wlMap[v]) checkOn(wlMap[v]); });
-  (d.roof_mat||[]).forEach(v=>{ if(rfMap[v]) checkOn(rfMap[v]); });
-  radio(['rc-toilet1','rc-toilet2'], d.toilet, {'มี':'rc-toilet1','ไม่มี':'rc-toilet2'});
-
-  // เกษตร
-  radio(['rc-ag0','rc-ag1'], d.agri==='ไม่ทำเกษตร'?'ไม่ทำเกษตร':'ทำเกษตร', {'ไม่ทำเกษตร':'rc-ag0','ทำเกษตร':'rc-ag1'});
-  if(d.agri==='น้อยกว่า 1 ไร่') checkOn('cb-ag1');
-  if(d.agri==='1 ถึง 5 ไร่') checkOn('cb-ag2');
-  if(d.agri==='มากกว่า 5 ไร่') checkOn('cb-ag3');
-
-  // น้ำ
-  (d.water||[]).forEach(v => { const m={'น้ำดื่มบรรจุขวด/ตู้หยอดน้ำ':'cb-wt1','น้ำประปา':'cb-wt2','น้ำบ่อ/น้ำบาดาล':'cb-wt3','น้ำฝน/น้ำประปาภูเขา/ลำธาร':'cb-wt4'}; if(m[v]) checkOn(m[v]); });
-  // ไฟ
-  radio(['rc-el0','rc-el1'], d.electric==='ไม่มีไฟฟ้า'?'ไม่มีไฟฟ้า':'มีไฟฟ้า', {'ไม่มีไฟฟ้า':'rc-el0','มีไฟฟ้า':'rc-el1'});
-  if(d.electric==='เครื่องปั่นไฟ/โซลาเซลล์') checkOn('cb-el1');
-  if(d.electric==='ไฟต่อพ่วง/แบตเตอรี่') checkOn('cb-el2');
-  if(d.electric==='ไฟบ้านหรือมิเตอร์') checkOn('cb-el3');
-  // ยานพาหนะ
-  radio(['rc-veh0','rc-veh1'], d.vehicle_has, {'ไม่มียานพาหนะ':'rc-veh0','มียานพาหนะ':'rc-veh1'});
-  (d.vehicles||[]).forEach(v => { const m={'รถยนต์นั่งส่วนบุคคล':'cb-veh1','รถปิกอัพ/รถบรรทุกเล็ก/รถตู้':'cb-veh2','รถไถ/รถเกี่ยวข้าว':'cb-veh3','รถมอเตอร์ไซต์/เรือประมงพื้นบ้าน':'cb-veh4'}; if(m[v]) checkOn(m[v]); });
-  // ของใช้
-  radio(['rc-hh0','rc-hh1'], d.household_has, {'ไม่มีของใช้':'rc-hh0','มีของใช้':'rc-hh1'});
-  (d.household||[]).forEach(v => { const m={'คอมพิวเตอร์':'cb-hh1','แอร์':'cb-hh2','ทีวีจอแบน':'cb-hh3','เครื่องซักผ้า':'cb-hh4','ตู้เย็น':'cb-hh5'}; if(m[v]) checkOn(m[v]); });
-
-  // ── Page 4 ────────────────────────────────
-  const travelMap={'เดิน':'rc-tr1','จักรยาน':'rc-tr2','รถโรงเรียน':'rc-tr3','จักรยานยนต์ส่วนตัว':'rc-tr4','รถส่วนตัว':'rc-tr5','เรือส่วนตัว':'rc-tr6','จักรยานยนต์รับจ้าง':'rc-tr7','รถโดยสารประจำทาง/รับจ้าง':'rc-tr8','เรือโดยสารประจำทาง/รับจ้าง':'rc-tr9'};
-  radio(Object.values(travelMap), d.travel, travelMap);
-  const km=(d.travel_km||'0').toString().split('.');
-  set('pdf-km1', km[0]||''); set('pdf-km2', km[1]||'0');
-  const tt=(d.travel_time||'0:00').split(':');
-  set('pdf-th', tt[0]||''); set('pdf-tm', tt[1]||'');
-  set('pdf-tcost',  d.travel_cost);
-  set('pdf-tmoney', d.std_money);
-
-  set('pdf-ano',      d.addr_no);
-  set('pdf-amoo',     d.addr_moo);
-  set('pdf-asoi',     d.addr_soi);
-  set('pdf-aroad',    d.addr_road);
-  set('pdf-atambon',  d.addr_tambon);
-  set('pdf-aamphoe',  d.addr_amphoe);
-  set('pdf-aprov',    d.addr_province);
-  set('pdf-azip',     d.addr_zip);
-
-  radio(['rc-ps1','rc-ps2'], d.photo_src, {'ครูลงเยี่ยมบ้านด้วยตนเอง':'rc-ps1','ให้นักเรียนถ่ายภาพมาให้':'rc-ps2'});
-  radio(['rc-pt1','rc-pt2','rc-pt3'], d.photo_type, {'ภาพถ่ายที่พักอาศัย/หอพัก':'rc-pt1','ภาพถ่ายครัวเรือนสถาบัน':'rc-pt2','ภาพนักเรียนคู่ป้าย':'rc-pt3'});
-
-  src('pdf-photo-out', d.photos?.prev_out);
-  src('pdf-photo-in',  d.photos?.prev_in);
-  if(d.cert_confirm) checkOn('cb-cert8');
-  if(d.pdpa_accept)  checkOn('cb-pdpa');
-
-  // ── Page 5 ────────────────────────────────
-  sigImg('pdf-sig1-box', d.sigs?.sig1); set('pdf-sig1-name', d.sig1_name);
-  sigImg('pdf-sig2-box', d.sigs?.sig2); set('pdf-sig2-name', d.sig2_name);
-  sigImg('pdf-sig3-box', d.sigs?.sig3); set('pdf-sig3-name', d.sig3_name); set('pdf-sig3-pos', d.sig3_pos);
-  sigImg('pdf-sig4-box', d.sigs?.sig4);
-  set('pdf-sig4-name', d.sig4_name); set('pdf-sig4-name2', d.sig4_name); set('pdf-sig4-pos', d.sig4_pos);
-  fillId('pdf-sig4-id-boxes', d.sig4_id);
-
-  if(d.cert==='ขอรับรอง')   checkOn('cb-cert-yes');
-  if(d.cert==='ไม่ขอรับรอง') checkOn('cb-cert-no');
-  set('pdf-cert-reason', d.cert_reason||'');
-
-  sigImg('pdf-sig5-box', d.sigs?.sig5); set('pdf-sig5-name', d.sig5_name);
-
-  set('pdf-recorder',    d.sig3_name||'');
-  set('pdf-record-date', d.savedAt||'');
-  set('pdf-print-date',  new Date().toLocaleDateString('th-TH',{year:'numeric',month:'long',day:'numeric'}));
 }
 
-// Export via html2pdf
-function exportKSS01PDF(data, filename) {
-  fillKSS01(data);
-  return new Promise((resolve, reject) => {
-    const el = document.getElementById('kss-form-root') || document.body;
-    html2pdf().set({
-      margin:        0,
-      filename:      filename || `กสศ01_${data.std_fname||''}${data.std_lname||''}.pdf`,
-      image:         { type: 'jpeg', quality: 0.97 },
-      html2canvas:   { scale: 2, useCORS: true, logging: false, windowWidth: 794 },
-      jsPDF:         { unit: 'mm', format: 'a4', orientation: 'portrait' },
-      pagebreak:     { mode: ['css'], before: '.page' }
-    }).from(document.body).save().then(resolve).catch(reject);
-  });
+// ฟังก์ชันสั่ง Export ออกเป็น PDF ความละเอียดสูง 2X ป้องกันภาพแตก
+function exportKSS01PDF(filename) {
+    const element = document.getElementById('kss-form-root');
+    const opt = {
+        margin:       0,
+        filename:     filename || 'แบบ_นร_กสศ01.pdf',
+        image:        { type: 'jpeg', quality: 0.98 },
+        html2canvas:  { scale: 2, useCORS: true, logging: false },
+        jsPDF:        { unit: 'mm', format: 'a4', orientation: 'portrait' },
+        pagebreak:    { mode: ['css', 'legacy'] }
+    };
+    
+    // รันกระบวนการสร้าง PDF
+    html2pdf().set(opt).from(element).save();
 }
 </script>
 </body>
