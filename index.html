@@ -2,1388 +2,974 @@
 <html lang="th">
 <head>
 <meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="viewport" content="width=device-width,initial-scale=1.0">
 <title>ระบบแบบฟอร์ม นร./กสศ.01</title>
 <link href="https://fonts.googleapis.com/css2?family=Sarabun:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+<!-- html2pdf CDN -->
 <script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html2pdf.bundle.min.js"></script>
 <style>
-/* ─── Reset & Variables ─── */
+/* ─── Reset ─── */
 *{box-sizing:border-box;margin:0;padding:0}
 body{font-family:'Sarabun',sans-serif;background:#f0f4f8;color:#2d3748;font-size:15px}
-:root{
-  --primary:#1a56db;--primary-dark:#1e429f;--accent:#0694a2;
-  --success:#057a55;--warn:#c27803;--danger:#c81e1e;
-  --card:#fff;--border:#e2e8f0;--text:#2d3748;--muted:#718096;
-}
+:root{--p:#1a56db;--pd:#1e429f;--s:#0694a2;--ok:#057a55;--err:#c81e1e;--warn:#c27803;--border:#e2e8f0;--muted:#718096}
 
 /* ─── Header ─── */
-.app-header{background:linear-gradient(135deg,#1a56db,#0694a2);color:#fff;padding:16px 24px;display:flex;align-items:center;gap:14px;box-shadow:0 2px 12px rgba(0,0,0,.25)}
-.header-logo{font-size:26px;font-weight:800;background:#fff;color:#1a56db;width:46px;height:46px;border-radius:12px;display:flex;align-items:center;justify-content:center;flex-shrink:0}
-.header-title h1{font-size:17px;font-weight:700;line-height:1.3}
-.header-title p{font-size:12px;opacity:.85;margin-top:2px}
-.api-badge{margin-left:auto;background:rgba(255,255,255,.2);border:1px solid rgba(255,255,255,.4);border-radius:20px;padding:4px 12px;font-size:12px;display:flex;align-items:center;gap:6px;white-space:nowrap}
-.api-dot{width:8px;height:8px;border-radius:50%;background:#f6c90e}
-.api-dot.connected{background:#31d48c}
+.hdr{background:linear-gradient(135deg,var(--p),var(--s));color:#fff;padding:14px 22px;display:flex;align-items:center;gap:12px;box-shadow:0 2px 10px rgba(0,0,0,.2)}
+.hdr-logo{width:44px;height:44px;background:#fff;border-radius:10px;display:flex;align-items:center;justify-content:center;color:var(--p);font-size:17px;font-weight:800;flex-shrink:0}
+.hdr h1{font-size:16px;font-weight:700;line-height:1.3}
+.hdr p{font-size:12px;opacity:.85}
+.api-pill{margin-left:auto;background:rgba(255,255,255,.18);border:1px solid rgba(255,255,255,.35);border-radius:20px;padding:4px 12px;font-size:12px;display:flex;align-items:center;gap:6px;white-space:nowrap;flex-shrink:0}
+.dot{width:8px;height:8px;border-radius:50%;background:#f6c90e;transition:background .4s}
+.dot.on{background:#31d48c}
 
-/* ─── Config Banner ─── */
-.config-banner{background:#fffbeb;border-bottom:2px solid #fcd34d;padding:12px 24px;display:flex;align-items:center;gap:12px;flex-wrap:wrap}
-.config-banner.hidden{display:none}
-.config-banner p{font-size:13px;color:#92400e;flex:1}
-.config-banner input{flex:2;min-width:200px;padding:7px 12px;border:1.5px solid #f6ad55;border-radius:8px;font-family:'Sarabun',sans-serif;font-size:13px}
-.config-banner button{padding:7px 18px;background:#c27803;color:#fff;border:none;border-radius:8px;font-family:'Sarabun',sans-serif;font-size:13px;font-weight:600;cursor:pointer}
+/* ─── Config bar ─── */
+.cfg{background:#fffbeb;border-bottom:2px solid #fcd34d;padding:10px 22px;display:flex;align-items:center;gap:10px;flex-wrap:wrap}
+.cfg p{font-size:13px;color:#92400e;flex:1;min-width:160px}
+.cfg input{flex:2;min-width:200px;padding:7px 11px;border:1.5px solid #f6ad55;border-radius:8px;font-family:inherit;font-size:13px}
+.cfg button{padding:7px 18px;background:#c27803;color:#fff;border:none;border-radius:8px;font-family:inherit;font-size:13px;font-weight:600;cursor:pointer}
 
 /* ─── Tabs ─── */
-.main-tabs{display:flex;background:#fff;border-bottom:2px solid var(--border);padding:0 20px;overflow-x:auto}
-.main-tabs button{padding:13px 18px;border:none;background:none;font-family:'Sarabun',sans-serif;font-size:13px;font-weight:500;color:var(--muted);cursor:pointer;border-bottom:3px solid transparent;margin-bottom:-2px;transition:all .2s;white-space:nowrap}
-.main-tabs button.active{color:var(--primary);border-bottom-color:var(--primary);font-weight:700}
+.tabs{display:flex;background:#fff;border-bottom:2px solid var(--border);padding:0 18px;overflow-x:auto}
+.tabs button{padding:12px 16px;border:none;background:none;font-family:inherit;font-size:13px;font-weight:500;color:var(--muted);cursor:pointer;border-bottom:3px solid transparent;margin-bottom:-2px;transition:all .2s;white-space:nowrap}
+.tabs button.on{color:var(--p);border-bottom-color:var(--p);font-weight:700}
 
-/* ─── Progress Steps ─── */
-.progress-wrap{background:#fff;padding:18px 24px;border-bottom:1px solid var(--border)}
-.steps{display:flex;counter-reset:step}
+/* ─── Steps ─── */
+.steps-bar{background:#fff;padding:16px 22px;border-bottom:1px solid var(--border)}
+.steps{display:flex}
 .step{flex:1;display:flex;flex-direction:column;align-items:center;position:relative;cursor:pointer}
-.step:not(:last-child)::after{content:'';position:absolute;top:17px;left:50%;width:100%;height:2px;background:var(--border);z-index:0}
-.step.done:not(:last-child)::after,.step.active:not(:last-child)::after{background:var(--primary)}
-.step-num{width:34px;height:34px;border-radius:50%;background:var(--border);color:var(--muted);display:flex;align-items:center;justify-content:center;font-weight:700;font-size:13px;z-index:1;transition:all .3s}
-.step.done .step-num{background:var(--success);color:#fff}
-.step.active .step-num{background:var(--primary);color:#fff;box-shadow:0 0 0 4px rgba(26,86,219,.2)}
-.step-label{font-size:10px;color:var(--muted);margin-top:5px;text-align:center;line-height:1.3}
-.step.active .step-label{color:var(--primary);font-weight:700}
+.step:not(:last-child)::after{content:'';position:absolute;top:16px;left:50%;width:100%;height:2px;background:var(--border);z-index:0}
+.step.done:not(:last-child)::after,.step.cur:not(:last-child)::after{background:var(--p)}
+.sn{width:32px;height:32px;border-radius:50%;background:var(--border);color:var(--muted);display:flex;align-items:center;justify-content:center;font-weight:700;font-size:13px;z-index:1;transition:all .3s}
+.step.done .sn{background:var(--ok);color:#fff}
+.step.cur  .sn{background:var(--p);color:#fff;box-shadow:0 0 0 4px rgba(26,86,219,.2)}
+.sl{font-size:10px;color:var(--muted);margin-top:5px;text-align:center;line-height:1.3}
+.step.cur .sl{color:var(--p);font-weight:700}
 
-/* ─── Cards & Forms ─── */
-.form-container{padding:20px;max-width:920px;margin:0 auto}
-.card{background:#fff;border-radius:12px;padding:22px;margin-bottom:18px;box-shadow:0 1px 4px rgba(0,0,0,.08)}
-.card-title{font-size:15px;font-weight:700;color:var(--primary);margin-bottom:16px;padding-bottom:10px;border-bottom:2px solid var(--border);display:flex;align-items:center;gap:8px}
-.card-icon{width:28px;height:28px;background:rgba(26,86,219,.1);border-radius:8px;display:flex;align-items:center;justify-content:center;font-size:14px}
-
-.form-grid{display:grid;gap:13px}
+/* ─── Card / Form ─── */
+.wrap{padding:18px;max-width:920px;margin:0 auto}
+.card{background:#fff;border-radius:12px;padding:20px;margin-bottom:16px;box-shadow:0 1px 4px rgba(0,0,0,.08)}
+.ctitle{font-size:14px;font-weight:700;color:var(--p);margin-bottom:14px;padding-bottom:9px;border-bottom:2px solid var(--border);display:flex;align-items:center;gap:8px}
+.ci{width:26px;height:26px;background:rgba(26,86,219,.1);border-radius:7px;display:flex;align-items:center;justify-content:center;font-size:13px}
+.sh{font-size:13px;font-weight:700;color:#4a5568;margin:12px 0 6px;padding-left:8px;border-left:3px solid var(--p)}
+.g{display:grid;gap:12px}
 .g2{grid-template-columns:1fr 1fr}
 .g3{grid-template-columns:1fr 1fr 1fr}
 .g4{grid-template-columns:1fr 1fr 1fr 1fr}
 .full{grid-column:1/-1}
+label.lb{font-size:12px;font-weight:600;color:#4a5568;display:block;margin-bottom:3px}
+input[type=text],input[type=number],input[type=tel],select,textarea{border:1.5px solid var(--border);border-radius:8px;padding:7px 10px;font-family:inherit;font-size:13px;color:#2d3748;width:100%;transition:border .2s;background:#fff}
+input:focus,select:focus{outline:none;border-color:var(--p);box-shadow:0 0 0 3px rgba(26,86,219,.1)}
+.id-inp{letter-spacing:2px;font-size:14px;font-weight:700}
 
-label.lbl{font-size:12px;font-weight:600;color:#4a5568;display:block;margin-bottom:4px}
-input[type=text],input[type=number],input[type=tel],select,textarea{
-  border:1.5px solid var(--border);border-radius:8px;padding:8px 11px;
-  font-family:'Sarabun',sans-serif;font-size:13px;color:var(--text);
-  transition:border .2s;background:#fff;width:100%
-}
-input:focus,select:focus,textarea:focus{outline:none;border-color:var(--primary);box-shadow:0 0 0 3px rgba(26,86,219,.1)}
-.id-input{letter-spacing:2px;font-size:14px;font-weight:600}
-.sec-head{font-size:13px;font-weight:700;color:#4a5568;margin:13px 0 7px;padding-left:9px;border-left:3px solid var(--primary)}
+/* ─── Radio / Checkbox pills ─── */
+.rg,.cg{display:flex;flex-wrap:wrap;gap:6px;margin-top:3px}
+.ri,.ci2{display:flex;align-items:center;gap:4px;cursor:pointer;padding:5px 10px;border:1.5px solid var(--border);border-radius:8px;font-size:12px;transition:all .2s;user-select:none}
+.ri:hover,.ci2:hover{border-color:var(--p);background:rgba(26,86,219,.04)}
+.ri input,.ci2 input{accent-color:var(--p)}
+.ri.sel,.ci2.sel{border-color:var(--p);background:rgba(26,86,219,.08);font-weight:600;color:var(--p)}
 
-/* ─── Radio / Checkbox ─── */
-.radio-group,.check-group{display:flex;flex-wrap:wrap;gap:7px;margin-top:3px}
-.radio-item,.check-item{display:flex;align-items:center;gap:5px;cursor:pointer;padding:5px 11px;border:1.5px solid var(--border);border-radius:8px;font-size:12px;transition:all .2s;user-select:none}
-.radio-item:hover,.check-item:hover{border-color:var(--primary);background:rgba(26,86,219,.04)}
-.radio-item input,.check-item input{accent-color:var(--primary)}
-.radio-item.sel,.check-item.sel{border-color:var(--primary);background:rgba(26,86,219,.08);font-weight:600;color:var(--primary)}
+/* ─── Member table ─── */
+.tscroll{overflow-x:auto;margin-top:10px}
+.mt{width:100%;border-collapse:collapse;font-size:12px;min-width:860px}
+.mt th{background:#f7fafc;padding:6px 4px;text-align:center;border:1px solid var(--border);font-weight:700;color:#4a5568;font-size:11px;line-height:1.3}
+.mt td{padding:4px 3px;border:1px solid var(--border);text-align:center}
+.mt td input{border:none;padding:3px 4px;font-size:12px;background:transparent;text-align:center;width:100%;font-family:inherit}
+.mt td input:focus{background:#f0f4ff;border-radius:4px}
+.mt tr:nth-child(even) td{background:#fafbff}
+.delbtn{background:none;border:none;color:var(--err);cursor:pointer;font-size:14px;padding:2px 4px}
+.inc-total td{background:#e8f0fe!important;font-weight:700}
+.inc-avg   td{background:#e6f4ea!important;font-weight:700}
 
-/* ─── Member Table ─── */
-.tbl-wrap{overflow-x:auto;margin-top:10px}
-.member-table{width:100%;border-collapse:collapse;font-size:12px;min-width:900px}
-.member-table th{background:#f7fafc;padding:7px 5px;text-align:center;border:1px solid var(--border);font-weight:700;color:#4a5568;font-size:11px;line-height:1.3}
-.member-table td{padding:4px 3px;border:1px solid var(--border);text-align:center}
-.member-table td input[type=text],.member-table td input[type=number]{border:none;padding:3px 5px;font-size:12px;background:transparent;text-align:center;width:100%}
-.member-table td input:focus{background:#f0f4ff;border-radius:4px}
-.member-table tr:nth-child(even) td{background:#fafbff}
-.del-btn{background:none;border:none;color:var(--danger);cursor:pointer;font-size:15px;padding:2px 5px}
-.income-row{background:#f0f4ff!important;font-weight:700}
-.income-avg-row{background:#e8f5e9!important;font-weight:700}
+/* ─── Photo zone ─── */
+.pz{border:2px dashed var(--border);border-radius:10px;padding:14px;text-align:center;cursor:pointer;transition:all .2s;position:relative;min-height:110px;display:flex;flex-direction:column;align-items:center;justify-content:center}
+.pz:hover{border-color:var(--p);background:rgba(26,86,219,.03)}
+.pz img{max-width:100%;max-height:140px;border-radius:6px;object-fit:cover}
+.pz input[type=file]{position:absolute;inset:0;opacity:0;cursor:pointer;width:100%;height:100%}
+.pi{font-size:30px;color:var(--muted)}
+.ph{font-size:11px;color:var(--muted);margin-top:4px}
 
-/* ─── Photo zones ─── */
-.photo-zone{border:2px dashed var(--border);border-radius:10px;padding:16px;text-align:center;cursor:pointer;transition:all .2s;position:relative;min-height:120px;display:flex;flex-direction:column;align-items:center;justify-content:center}
-.photo-zone:hover{border-color:var(--primary);background:rgba(26,86,219,.03)}
-.photo-zone img{max-width:100%;max-height:150px;border-radius:8px;object-fit:cover}
-.photo-zone .ph-icon{font-size:32px;color:var(--muted)}
-.photo-zone p{font-size:12px;color:var(--muted);margin-top:5px}
-.photo-zone input[type=file]{position:absolute;inset:0;opacity:0;cursor:pointer;width:100%;height:100%}
-
-/* ─── Signature Pad ─── */
-.sig-wrap{border:2px solid var(--border);border-radius:10px;overflow:hidden}
-canvas.sig-canvas{display:block;background:#fafafa;cursor:crosshair;touch-action:none;width:100%}
-.sig-actions{display:flex;align-items:center;gap:8px;padding:7px 10px;background:#f7fafc;border-top:1px solid var(--border)}
-.sig-actions span{font-size:11px;color:var(--muted);font-style:italic;flex:1}
+/* ─── Sig pad ─── */
+.sigwrap{border:2px solid var(--border);border-radius:10px;overflow:hidden}
+canvas.sigc{display:block;background:#fafafa;cursor:crosshair;touch-action:none;width:100%}
+.sigact{display:flex;align-items:center;gap:7px;padding:6px 9px;background:#f7fafc;border-top:1px solid var(--border)}
+.sigact span{font-size:11px;color:var(--muted);font-style:italic;flex:1}
 
 /* ─── Buttons ─── */
-.btn{padding:9px 20px;border-radius:8px;border:none;font-family:'Sarabun',sans-serif;font-size:13px;font-weight:600;cursor:pointer;transition:all .2s;display:inline-flex;align-items:center;gap:6px}
+.btn{padding:8px 18px;border-radius:8px;border:none;font-family:inherit;font-size:13px;font-weight:600;cursor:pointer;transition:all .2s;display:inline-flex;align-items:center;gap:5px}
 .btn:disabled{opacity:.5;cursor:not-allowed}
-.btn-primary{background:var(--primary);color:#fff}
-.btn-primary:hover:not(:disabled){background:var(--primary-dark)}
-.btn-outline{background:#fff;color:var(--primary);border:2px solid var(--primary)}
-.btn-outline:hover:not(:disabled){background:rgba(26,86,219,.06)}
-.btn-success{background:var(--success);color:#fff}
-.btn-success:hover:not(:disabled){background:#046c4e}
-.btn-danger{background:var(--danger);color:#fff}
-.btn-danger:hover:not(:disabled){background:#9b1c1c}
-.btn-sm{padding:5px 13px;font-size:12px}
-.btn-add{background:rgba(26,86,219,.07);color:var(--primary);border:1.5px dashed var(--primary)}
-.btn-add:hover{background:rgba(26,86,219,.13)}
+.bp{background:var(--p);color:#fff}.bp:hover:not(:disabled){background:var(--pd)}
+.bo{background:#fff;color:var(--p);border:2px solid var(--p)}.bo:hover:not(:disabled){background:rgba(26,86,219,.06)}
+.bg{background:var(--ok);color:#fff}.bg:hover:not(:disabled){background:#046c4e}
+.br{background:var(--err);color:#fff}
+.bsm{padding:5px 12px;font-size:12px}
+.badd{background:rgba(26,86,219,.07);color:var(--p);border:1.5px dashed var(--p)}
 
-/* ─── Nav bar ─── */
-.form-nav{display:flex;justify-content:space-between;align-items:center;padding:14px 24px;background:#fff;border-top:1px solid var(--border);position:sticky;bottom:0;box-shadow:0 -2px 8px rgba(0,0,0,.08);z-index:10}
-.nav-info{font-size:12px;color:var(--muted)}
+/* ─── Nav ─── */
+.nav{display:flex;justify-content:space-between;align-items:center;padding:12px 22px;background:#fff;border-top:1px solid var(--border);position:sticky;bottom:0;box-shadow:0 -2px 8px rgba(0,0,0,.07);z-index:10}
+.nv{font-size:12px;color:var(--muted)}
 
-/* ─── Search / Export panels ─── */
-.panel{padding:20px;max-width:920px;margin:0 auto}
-.rec-card{background:#fff;border-radius:10px;padding:16px;margin-bottom:10px;box-shadow:0 1px 3px rgba(0,0,0,.07);display:flex;justify-content:space-between;align-items:flex-start;flex-wrap:wrap;gap:10px}
-.rec-name{font-size:15px;font-weight:700}
-.rec-meta{font-size:12px;color:var(--muted);margin-top:3px;line-height:1.6}
-.badge{display:inline-block;padding:2px 9px;border-radius:20px;font-size:11px;font-weight:700}
-.badge-blue{background:#e1effe;color:#1a56db}
-.badge-green{background:#def7ec;color:#057a55}
-.empty-state{text-align:center;padding:50px 20px;color:var(--muted)}
-.empty-state .ei{font-size:48px;margin-bottom:12px}
+/* ─── Search / Export ─── */
+.panel{padding:18px;max-width:920px;margin:0 auto}
+.rc{background:#fff;border-radius:10px;padding:14px 16px;margin-bottom:9px;box-shadow:0 1px 3px rgba(0,0,0,.07);display:flex;justify-content:space-between;align-items:flex-start;flex-wrap:wrap;gap:9px}
+.rn{font-size:14px;font-weight:700}
+.rm{font-size:12px;color:var(--muted);margin-top:3px;line-height:1.6}
+.badge{display:inline-block;padding:2px 8px;border-radius:20px;font-size:11px;font-weight:700}
+.bb{background:#e1effe;color:#1a56db}
+.bg2{background:#def7ec;color:#057a55}
+.empty{text-align:center;padding:44px 20px;color:var(--muted)}
+.ei{font-size:44px;margin-bottom:10px}
 
-/* ─── Loading Spinner ─── */
-.spinner-overlay{position:fixed;inset:0;background:rgba(0,0,0,.45);z-index:2000;display:flex;align-items:center;justify-content:center}
-.spinner-box{background:#fff;border-radius:16px;padding:30px 40px;text-align:center;box-shadow:0 10px 40px rgba(0,0,0,.2)}
-.spinner{width:44px;height:44px;border:4px solid var(--border);border-top-color:var(--primary);border-radius:50%;animation:spin .8s linear infinite;margin:0 auto 14px}
-@keyframes spin{to{transform:rotate(360deg)}}
-.spinner-box p{font-size:14px;color:#4a5568;font-weight:600}
+/* ─── Spinner ─── */
+.spin-ov{position:fixed;inset:0;background:rgba(0,0,0,.45);z-index:2000;display:flex;align-items:center;justify-content:center}
+.spin-box{background:#fff;border-radius:14px;padding:28px 36px;text-align:center;box-shadow:0 10px 40px rgba(0,0,0,.2)}
+.spin{width:42px;height:42px;border:4px solid var(--border);border-top-color:var(--p);border-radius:50%;animation:sp .8s linear infinite;margin:0 auto 12px}
+@keyframes sp{to{transform:rotate(360deg)}}
+.spin-box p{font-size:14px;color:#4a5568;font-weight:600}
 
 /* ─── Toast ─── */
-.toast{position:fixed;bottom:80px;right:20px;padding:11px 18px;border-radius:10px;font-size:13px;font-weight:600;z-index:3000;opacity:0;transform:translateY(8px);transition:all .3s;pointer-events:none;max-width:300px;line-height:1.4}
+.toast{position:fixed;bottom:74px;right:18px;padding:10px 16px;border-radius:10px;font-size:13px;font-weight:600;z-index:3000;opacity:0;transform:translateY(8px);transition:all .3s;pointer-events:none;max-width:280px;line-height:1.4}
 .toast.show{opacity:1;transform:translateY(0)}
-.toast.success{background:#057a55;color:#fff}
-.toast.error{background:#c81e1e;color:#fff}
-.toast.info{background:#1a56db;color:#fff}
+.tOK{background:var(--ok);color:#fff}
+.tErr{background:var(--err);color:#fff}
+.tInfo{background:var(--p);color:#fff}
 
-/* ─── PDF hidden container ─── */
-#pdf-target{position:absolute;left:-9999px;top:0}
+/* ─── Hidden PDF iframe ─── */
+#pdf-iframe{position:fixed;left:-9999px;top:0;width:210mm;height:297mm;border:none;opacity:0;pointer-events:none}
 
 /* ─── Responsive ─── */
-@media(max-width:640px){
+@media(max-width:620px){
   .g2,.g3,.g4{grid-template-columns:1fr}
-  .app-header{padding:12px 16px}
-  .api-badge{display:none}
-  .form-container,.panel{padding:12px}
-  .card{padding:16px}
-  .step-label{font-size:9px}
+  .api-pill{display:none}
+  .sl{font-size:9px}
 }
 </style>
 </head>
 <body>
 
-<!-- ════════════════════════════════════════════════════════
-     HEADER
-════════════════════════════════════════════════════════ -->
-<header class="app-header">
-  <div class="header-logo">กสศ</div>
-  <div class="header-title">
+<!-- HEADER -->
+<header class="hdr">
+  <div class="hdr-logo">กสศ</div>
+  <div>
     <h1>ระบบแบบฟอร์ม นร./กสศ.01</h1>
     <p>แบบขอรับเงินอุดหนุนนักเรียนยากจน • ภาคเรียนที่ 1 ปีการศึกษา 2569</p>
   </div>
-  <div class="api-badge">
-    <span class="api-dot" id="apiDot"></span>
-    <span id="apiStatus">ยังไม่เชื่อมต่อ</span>
+  <div class="api-pill">
+    <span class="dot" id="apiDot"></span>
+    <span id="apiStat">ยังไม่เชื่อมต่อ</span>
   </div>
 </header>
 
-<!-- ════════════════════════════════════════════════════════
-     CONFIG BANNER — ใส่ URL ของ Apps Script
-════════════════════════════════════════════════════════ -->
-<div class="config-banner" id="configBanner">
-  <p>⚙️ <strong>ตั้งค่า API:</strong> วาง Google Apps Script Web App URL ด้านล่าง แล้วกด "บันทึก"</p>
-  <input type="text" id="apiUrlInput" placeholder="https://script.google.com/macros/s/AKfycbxrOZ6Ml7BYsSXq1xMeMUK6D88yO4Y4KIVOdFHt2HA9Zq27Bu0hmY7V0lI0eBb2DTA6/exec">
-  <button onclick="saveApiUrl()">บันทึก URL</button>
+<!-- CONFIG -->
+<div class="cfg" id="cfgBar">
+  <p>⚙️ <strong>ตั้งค่า:</strong> วาง Google Apps Script Web App URL</p>
+  <input type="text" id="apiIn" placeholder="https://script.google.com/macros/s/AKfycbw2KgL-_skqopvMuzeTnvpY3keiU21lBu6lnLPiEF_Rsg5QbN3wwW4ZSYMBXkbkWkIoUg/exec">
+  <button onclick="saveUrl()">💾 บันทึก</button>
 </div>
 
-<!-- ════════════════════════════════════════════════════════
-     TABS
-════════════════════════════════════════════════════════ -->
-<nav class="main-tabs">
-  <button class="active" onclick="switchTab('form',this)">📝 บันทึกข้อมูล</button>
-  <button onclick="switchTab('search',this)">🔍 ค้นหา / แก้ไข</button>
-  <button onclick="switchTab('export',this)">📄 Export PDF</button>
+<!-- TABS -->
+<nav class="tabs">
+  <button class="on" onclick="tab('form',this)">📝 บันทึกข้อมูล</button>
+  <button onclick="tab('search',this)">🔍 ค้นหา / แก้ไข</button>
+  <button onclick="tab('export',this)">📄 Export PDF</button>
 </nav>
 
-<!-- ════════════════════════════════════════════════════════
-     TAB: FORM
-════════════════════════════════════════════════════════ -->
+<!-- ════════════ TAB: FORM ════════════ -->
 <div id="tab-form">
-
-  <!-- Step Progress -->
-  <div class="progress-wrap">
+  <!-- Steps -->
+  <div class="steps-bar">
     <div class="steps" id="stepsBar">
-      <div class="step active" onclick="goStep(1)"><div class="step-num">1</div><div class="step-label">ข้อมูล<br>นักเรียน</div></div>
-      <div class="step"        onclick="goStep(2)"><div class="step-num">2</div><div class="step-label">สมาชิก<br>ครัวเรือน</div></div>
-      <div class="step"        onclick="goStep(3)"><div class="step-num">3</div><div class="step-label">สถานะ<br>ครัวเรือน</div></div>
-      <div class="step"        onclick="goStep(4)"><div class="step-num">4</div><div class="step-label">เดินทาง<br>&amp;รูปภาพ</div></div>
-      <div class="step"        onclick="goStep(5)"><div class="step-num">5</div><div class="step-label">รับรอง<br>ข้อมูล</div></div>
+      <div class="step cur" onclick="go(1)"><div class="sn">1</div><div class="sl">ข้อมูล<br>นักเรียน</div></div>
+      <div class="step"    onclick="go(2)"><div class="sn">2</div><div class="sl">สมาชิก<br>ครัวเรือน</div></div>
+      <div class="step"    onclick="go(3)"><div class="sn">3</div><div class="sl">สถานะ<br>ครัวเรือน</div></div>
+      <div class="step"    onclick="go(4)"><div class="sn">4</div><div class="sl">เดินทาง<br>&amp;รูปภาพ</div></div>
+      <div class="step"    onclick="go(5)"><div class="sn">5</div><div class="sl">รับรอง<br>ข้อมูล</div></div>
     </div>
   </div>
 
-  <div class="form-container">
+  <div class="wrap">
 
-    <!-- ══ PAGE 1 ══════════════════════════════════════════ -->
-    <div id="page1">
-
+    <!-- PAGE 1 -->
+    <div id="p1">
       <div class="card">
-        <div class="card-title"><div class="card-icon">🏫</div>ข้อมูลโรงเรียน</div>
-        <div class="form-grid g2">
-          <div><label class="lbl">โรงเรียน</label><input type="text" id="school" placeholder="ชื่อโรงเรียน"></div>
-          <div><label class="lbl">สังกัด</label><input type="text" id="affiliation" placeholder="เช่น สพป.นครปฐม เขต 1"></div>
+        <div class="ctitle"><div class="ci">🏫</div>ข้อมูลโรงเรียน</div>
+        <div class="g g2">
+          <div><label class="lb">โรงเรียน</label><input type="text" id="school" placeholder="ชื่อโรงเรียน"></div>
+          <div><label class="lb">สังกัด</label><input type="text" id="affiliation" placeholder="เช่น สพป.นครปฐม เขต 1"></div>
         </div>
       </div>
 
       <div class="card">
-        <div class="card-title"><div class="card-icon">👤</div>1. ข้อมูลนักเรียน</div>
-        <div style="display:flex;gap:18px;flex-wrap:wrap">
+        <div class="ctitle"><div class="ci">👤</div>1. ข้อมูลนักเรียน</div>
+        <div style="display:flex;gap:16px;flex-wrap:wrap">
           <div style="flex:1;min-width:220px">
-            <div class="form-grid g3">
-              <div><label class="lbl">ชื่อนักเรียน</label><input type="text" id="std_fname" placeholder="ชื่อ"></div>
-              <div><label class="lbl">นามสกุล</label><input type="text" id="std_lname" placeholder="นามสกุล"></div>
-              <div>
-                <label class="lbl">ชั้นเรียน</label>
-                <select id="std_class">
-                  <option value="">-- เลือกชั้น --</option>
-                  <option>ป.1</option><option>ป.2</option><option>ป.3</option>
-                  <option>ป.4</option><option>ป.5</option><option>ป.6</option>
-                  <option>ม.1</option><option>ม.2</option><option>ม.3</option>
-                  <option>ม.4</option><option>ม.5</option><option>ม.6</option>
+            <div class="g g3">
+              <div><label class="lb">ชื่อนักเรียน</label><input type="text" id="std_fname" placeholder="ชื่อ"></div>
+              <div><label class="lb">นามสกุล</label><input type="text" id="std_lname" placeholder="นามสกุล"></div>
+              <div><label class="lb">ชั้นเรียน</label>
+                <select id="std_class"><option value="">-- เลือกชั้น --</option>
+                  <option>ป.1</option><option>ป.2</option><option>ป.3</option><option>ป.4</option><option>ป.5</option><option>ป.6</option>
+                  <option>ม.1</option><option>ม.2</option><option>ม.3</option><option>ม.4</option><option>ม.5</option><option>ม.6</option>
                 </select>
               </div>
-              <div class="full"><label class="lbl">เลขประจำตัวประชาชน / เลขรหัส G</label><input type="text" id="std_id" placeholder="x-xxxx-xxxxx-xx-x" maxlength="17" class="id-input"></div>
+              <div class="full"><label class="lb">เลขประจำตัวประชาชน / เลขรหัส G</label><input type="text" id="std_id" placeholder="x-xxxx-xxxxx-xx-x" maxlength="17" class="id-inp"></div>
             </div>
-            <div class="sec-head">สถานภาพครอบครัว</div>
-            <div class="radio-group" id="rg_fam">
-              <label class="radio-item"><input type="radio" name="family_status" value="พ่อแม่อยู่ด้วยกัน"> พ่อแม่อยู่ด้วยกัน</label>
-              <label class="radio-item"><input type="radio" name="family_status" value="พ่อแม่แยกกันอยู่"> พ่อแม่แยกกันอยู่</label>
-              <label class="radio-item"><input type="radio" name="family_status" value="พ่อแม่หย่าร้าง"> พ่อแม่หย่าร้าง</label>
-              <label class="radio-item"><input type="radio" name="family_status" value="พ่อเสียชีวิต/สาบสูญ"> พ่อเสียชีวิต/สาบสูญ</label>
-              <label class="radio-item"><input type="radio" name="family_status" value="แม่เสียชีวิต/สาบสูญ"> แม่เสียชีวิต/สาบสูญ</label>
-              <label class="radio-item"><input type="radio" name="family_status" value="เสียชีวิตทั้งคู่"> เสียชีวิตทั้งคู่/สาบสูญ</label>
-              <label class="radio-item"><input type="radio" name="family_status" value="พ่อแม่ทอดทิ้ง"> พ่อ/แม่ทอดทิ้ง</label>
+            <div class="sh">สถานภาพครอบครัว</div>
+            <div class="rg">
+              <label class="ri"><input type="radio" name="family_status" value="พ่อแม่อยู่ด้วยกัน">พ่อแม่อยู่ด้วยกัน</label>
+              <label class="ri"><input type="radio" name="family_status" value="พ่อแม่แยกกันอยู่">พ่อแม่แยกกันอยู่</label>
+              <label class="ri"><input type="radio" name="family_status" value="พ่อแม่หย่าร้าง">พ่อแม่หย่าร้าง</label>
+              <label class="ri"><input type="radio" name="family_status" value="พ่อเสียชีวิต/สาบสูญ">พ่อเสียชีวิต/สาบสูญ</label>
+              <label class="ri"><input type="radio" name="family_status" value="แม่เสียชีวิต/สาบสูญ">แม่เสียชีวิต/สาบสูญ</label>
+              <label class="ri"><input type="radio" name="family_status" value="เสียชีวิตทั้งคู่">เสียชีวิตทั้งคู่/สาบสูญ</label>
+              <label class="ri"><input type="radio" name="family_status" value="พ่อแม่ทอดทิ้ง">พ่อ/แม่ทอดทิ้ง</label>
             </div>
-            <div class="sec-head">นักเรียนอาศัยอยู่กับ</div>
-            <div class="radio-group">
-              <label class="radio-item"><input type="radio" name="live_with" value="พ่อ/แม่"> พ่อ/แม่</label>
-              <label class="radio-item"><input type="radio" name="live_with" value="ญาติ"> ญาติ</label>
-              <label class="radio-item"><input type="radio" name="live_with" value="อยู่ลำพัง"> อยู่ลำพัง</label>
-              <label class="radio-item"><input type="radio" name="live_with" value="ผู้อุปการะ/นายจ้าง"> ผู้อุปการะ/นายจ้าง</label>
-              <label class="radio-item"><input type="radio" name="live_with" value="ครัวเรือนสถาบัน"> ครัวเรือนสถาบัน</label>
+            <div class="sh">นักเรียนอาศัยอยู่กับ</div>
+            <div class="rg">
+              <label class="ri"><input type="radio" name="live_with" value="พ่อ/แม่">พ่อ/แม่</label>
+              <label class="ri"><input type="radio" name="live_with" value="ญาติ">ญาติ</label>
+              <label class="ri"><input type="radio" name="live_with" value="อยู่ลำพัง">อยู่ลำพัง</label>
+              <label class="ri"><input type="radio" name="live_with" value="ผู้อุปการะ/นายจ้าง">ผู้อุปการะ/นายจ้าง</label>
+              <label class="ri"><input type="radio" name="live_with" value="ครัวเรือนสถาบัน">ครัวเรือนสถาบัน</label>
             </div>
           </div>
-          <div style="width:120px;flex-shrink:0">
-            <label class="lbl">รูปถ่ายนักเรียน</label>
-            <div class="photo-zone" id="zone_student" style="min-height:150px">
-              <input type="file" accept="image/*" onchange="previewPhoto(this,'zone_student','prev_student')">
-              <div id="prev_student"><div class="ph-icon">📷</div><p>อัปโหลดรูป</p></div>
+          <div style="width:110px;flex-shrink:0">
+            <label class="lb">รูปถ่ายนักเรียน</label>
+            <div class="pz" id="z_std" style="min-height:140px">
+              <input type="file" accept="image/*" onchange="prevPhoto(this,'z_std','pd_std')">
+              <div id="pd_std"><div class="pi">📷</div><p class="ph">อัปโหลดรูป</p></div>
             </div>
           </div>
         </div>
       </div>
 
       <div class="card">
-        <div class="card-title"><div class="card-icon">👨‍👩‍👧</div>ข้อมูลผู้ปกครอง</div>
-        <div class="form-grid g3">
-          <div><label class="lbl">ชื่อผู้ปกครอง</label><input type="text" id="grd_fname" placeholder="ชื่อ"></div>
-          <div><label class="lbl">นามสกุล</label><input type="text" id="grd_lname" placeholder="นามสกุล"></div>
-          <div><label class="lbl">ความสัมพันธ์</label><input type="text" id="grd_rel" placeholder="เช่น บิดา มารดา"></div>
-          <div>
-            <label class="lbl">การศึกษาสูงสุด</label>
-            <select id="grd_edu">
-              <option value="">-- เลือก --</option>
+        <div class="ctitle"><div class="ci">👨‍👩‍👧</div>ข้อมูลผู้ปกครอง</div>
+        <div class="g g3">
+          <div><label class="lb">ชื่อผู้ปกครอง</label><input type="text" id="grd_fname" placeholder="ชื่อ"></div>
+          <div><label class="lb">นามสกุล</label><input type="text" id="grd_lname" placeholder="นามสกุล"></div>
+          <div><label class="lb">ความสัมพันธ์</label><input type="text" id="grd_rel" placeholder="เช่น บิดา มารดา"></div>
+          <div><label class="lb">การศึกษาสูงสุด</label>
+            <select id="grd_edu"><option value="">-- เลือก --</option>
               <option>ไม่ได้รับการศึกษา</option><option>ประถมศึกษา</option>
               <option>มัธยมศึกษาตอนต้น</option><option>มัธยมศึกษาตอนปลาย/ปวช.</option>
               <option>อนุปริญญา/ปวส.</option><option>ปริญญาตรีขึ้นไป</option>
             </select>
           </div>
-          <div><label class="lbl">อาชีพ</label><input type="text" id="grd_job" placeholder="อาชีพ"></div>
-          <div><label class="lbl">เบอร์โทรศัพท์</label><input type="tel" id="grd_phone" placeholder="0xx-xxx-xxxx"></div>
-          <div class="full"><label class="lbl">เลขประจำตัวประชาชนผู้ปกครอง</label><input type="text" id="grd_id" placeholder="x-xxxx-xxxxx-xx-x" class="id-input" maxlength="17"></div>
+          <div><label class="lb">อาชีพ</label><input type="text" id="grd_job" placeholder="อาชีพ"></div>
+          <div><label class="lb">เบอร์โทรศัพท์</label><input type="tel" id="grd_phone" placeholder="0xx-xxx-xxxx"></div>
+          <div class="full"><label class="lb">เลขประจำตัวประชาชนผู้ปกครอง</label><input type="text" id="grd_id" placeholder="x-xxxx-xxxxx-xx-x" class="id-inp" maxlength="17"></div>
         </div>
-        <div style="margin-top:10px;display:flex;gap:10px;flex-wrap:wrap">
-          <label class="check-item"><input type="checkbox" id="no_grd_id" onchange="toggleClass(this,'sel')"> ไม่มีเลขประจำตัวประชาชน</label>
-          <label class="check-item"><input type="checkbox" id="welfare" onchange="toggleClass(this,'sel')"> ได้สวัสดิการแห่งรัฐ (ทะเบียนคนจน)</label>
+        <div style="margin-top:10px;display:flex;gap:8px;flex-wrap:wrap">
+          <label class="ci2"><input type="checkbox" id="no_grd_id" onchange="tgl(this)">ไม่มีเลขประจำตัวประชาชน</label>
+          <label class="ci2"><input type="checkbox" id="welfare" onchange="tgl(this)">ได้สวัสดิการแห่งรัฐ (ทะเบียนคนจน)</label>
         </div>
       </div>
-    </div><!-- /page1 -->
+    </div><!-- /p1 -->
 
-    <!-- ══ PAGE 2 ══════════════════════════════════════════ -->
-    <div id="page2" style="display:none">
+    <!-- PAGE 2 -->
+    <div id="p2" style="display:none">
       <div class="card">
-        <div class="card-title"><div class="card-icon">👨‍👩‍👧‍👦</div>2. สมาชิกในครัวเรือน (รวมตัวนักเรียน)</div>
-        <p style="font-size:12px;color:var(--muted);margin-bottom:12px">สมาชิกที่อยู่ร่วมกันตั้งแต่ 3 เดือนขึ้นไปและมีค่าใช้จ่ายร่วมกัน (สูงสุด 10 คน)</p>
-        <div class="tbl-wrap">
-          <table class="member-table" id="memberTable">
+        <div class="ctitle"><div class="ci">👨‍👩‍👧‍👦</div>2. สมาชิกในครัวเรือน (รวมตัวนักเรียน)</div>
+        <p style="font-size:12px;color:var(--muted);margin-bottom:10px">สมาชิกที่อยู่ร่วมกันตั้งแต่ 3 เดือนขึ้นไปและมีค่าใช้จ่ายร่วมกัน (สูงสุด 10 คน)</p>
+        <div class="tscroll">
+          <table class="mt">
             <thead>
               <tr>
-                <th rowspan="2" style="min-width:30px">คน<br>ที่</th>
-                <th rowspan="2" style="min-width:130px">ชื่อ - นามสกุล</th>
-                <th rowspan="2" style="min-width:80px">ความ<br>สัมพันธ์</th>
-                <th rowspan="2" style="min-width:120px">เลขประชาชน</th>
-                <th rowspan="2" style="min-width:75px">การศึกษา</th>
-                <th rowspan="2" style="min-width:40px">อายุ</th>
-                <th colspan="2" style="border-bottom:1px solid var(--border)">หากมี ✔</th>
-                <th colspan="5">รายได้เฉลี่ยต่อเดือน (บาท)</th>
-                <th rowspan="2" style="min-width:70px">รายได้รวม<br>ต่อเดือน</th>
-                <th rowspan="2" style="width:30px"></th>
-              </tr>
-              <tr>
-                <th>พิการ</th><th>โรค<br>เรื้อรัง</th>
-                <th style="min-width:70px">ค่าจ้าง/<br>เงินเดือน</th>
-                <th style="min-width:70px">เกษตรกรรม<br>(หลังหักทุน)</th>
-                <th style="min-width:70px">ธุรกิจ<br>(หลังหักทุน)</th>
-                <th style="min-width:70px">สวัสดิการ<br>จากรัฐ</th>
-                <th style="min-width:70px">รายได้<br>อื่นๆ</th>
+                <th rowspan="2" style="min-width:28px">คน<br>ที่</th>
+                <th rowspan="2" style="min-width:120px">ชื่อ - นามสกุล</th>
+                <th rowspan="2" style="min-width:75px">ความ<br>สัมพันธ์</th>
+                <th rowspan="2" style="min-width:110px">เลขประชาชน</th>
+                <th rowspan="2" style="min-width:70px">การศึกษา</th>
+                <th rowspan="2" style="min-width:38px">อายุ</th>
+                <th style="min-width:44px">พิการ</th>
+                <th style="min-width:44px">โรค<br>เรื้อรัง</th>
+                <th style="min-width:62px">ค่าจ้าง/<br>เงินเดือน</th>
+                <th style="min-width:62px">เกษตรกรรม<br>(หลังหักทุน)</th>
+                <th style="min-width:62px">ธุรกิจ<br>(หลังหักทุน)</th>
+                <th style="min-width:62px">สวัสดิการ<br>จากรัฐ</th>
+                <th style="min-width:62px">รายได้<br>อื่นๆ</th>
+                <th style="min-width:68px">รายได้รวม<br>ต่อเดือน</th>
+                <th style="min-width:28px"></th>
               </tr>
             </thead>
-            <tbody id="memberBody"></tbody>
+            <tbody id="mBody"></tbody>
             <tfoot>
-              <tr class="income-row">
-                <td colspan="13" style="text-align:right;padding:6px 8px;font-size:12px">รวมรายได้ครัวเรือน (รายการที่ 1-10)</td>
-                <td id="total_income" style="color:var(--primary)">0</td><td></td>
-              </tr>
-              <tr class="income-avg-row">
-                <td colspan="13" style="text-align:right;padding:6px 8px;font-size:12px">รายได้ครัวเรือนเฉลี่ยต่อคน</td>
-                <td id="avg_income" style="color:var(--success)">0</td><td></td>
-              </tr>
+              <tr class="inc-total"><td colspan="13" style="text-align:right;padding:6px 8px;font-size:12px">รวมรายได้ครัวเรือน (บาท/เดือน)</td><td id="ti" style="color:var(--p)">0</td><td></td></tr>
+              <tr class="inc-avg">  <td colspan="13" style="text-align:right;padding:6px 8px;font-size:12px">รายได้ครัวเรือนเฉลี่ยต่อคน (บาท/เดือน)</td><td id="ai" style="color:var(--ok)">0</td><td></td></tr>
             </tfoot>
           </table>
         </div>
-        <div style="margin-top:10px;display:flex;gap:8px;flex-wrap:wrap">
-          <button class="btn btn-add btn-sm" onclick="addMember()">+ เพิ่มสมาชิก</button>
-          <button class="btn btn-outline btn-sm" onclick="calcIncome()">🧮 คำนวณรายได้</button>
+        <div style="margin-top:9px;display:flex;gap:8px;flex-wrap:wrap">
+          <button class="btn badd bsm" onclick="addMem()">+ เพิ่มสมาชิก</button>
+          <button class="btn bo bsm" onclick="calcInc()">🧮 คำนวณรายได้</button>
         </div>
       </div>
-    </div><!-- /page2 -->
+    </div><!-- /p2 -->
 
-    <!-- ══ PAGE 3 ══════════════════════════════════════════ -->
-    <div id="page3" style="display:none">
+    <!-- PAGE 3 -->
+    <div id="p3" style="display:none">
       <div class="card">
-        <div class="card-title"><div class="card-icon">🏠</div>3. ข้อมูลสถานะของครัวเรือน</div>
+        <div class="ctitle"><div class="ci">🏠</div>3. ข้อมูลสถานะของครัวเรือน</div>
 
-        <div class="sec-head">3.1 ภาระพึ่งพิง</div>
-        <div class="radio-group" style="margin-bottom:7px">
-          <label class="radio-item"><input type="radio" name="burden" value="ไม่มีภาระพึ่งพิง"> ครัวเรือนไม่มีภาระพึ่งพิง</label>
-          <label class="radio-item"><input type="radio" name="burden" value="มีภาระพึ่งพิง"> ครัวเรือนมีภาระพึ่งพิง</label>
+        <div class="sh">3.1 ภาระพึ่งพิง</div>
+        <div class="rg" style="margin-bottom:6px">
+          <label class="ri"><input type="radio" name="burden" value="ไม่มีภาระพึ่งพิง">ครัวเรือนไม่มีภาระพึ่งพิง</label>
+          <label class="ri"><input type="radio" name="burden" value="มีภาระพึ่งพิง">ครัวเรือนมีภาระพึ่งพิง</label>
         </div>
-        <div class="check-group">
-          <label class="check-item"><input type="checkbox" name="burden_type" value="พิการ" onchange="toggleClass(this,'sel')"> มีความพิการทางร่างกาย/สติปัญญา</label>
-          <label class="check-item"><input type="checkbox" name="burden_type" value="โรคเรื้อรัง" onchange="toggleClass(this,'sel')"> มีโรคเรื้อรัง (ยกเว้น ความดัน/เบาหวาน)</label>
-          <label class="check-item"><input type="checkbox" name="burden_type" value="ผู้สูงอายุ" onchange="toggleClass(this,'sel')"> ผู้สูงอายุตั้งแต่ 60 ปีขึ้นไป</label>
-          <label class="check-item"><input type="checkbox" name="burden_type" value="แม่เลี้ยงเดี่ยว" onchange="toggleClass(this,'sel')"> เป็นพ่อ/แม่เลี้ยงเดี่ยว</label>
-          <label class="check-item"><input type="checkbox" name="burden_type" value="ว่างงาน" onchange="toggleClass(this,'sel')"> มีคนอายุ 15-65 ปีว่างงาน (ที่ไม่ใช่นักเรียน/นักศึกษา)</label>
-        </div>
-
-        <div class="sec-head">3.2 การอยู่อาศัย</div>
-        <div class="radio-group" style="margin-bottom:8px">
-          <label class="radio-item"><input type="radio" name="housing" value="บ้านตนเอง/เจ้าของบ้าน"> อยู่บ้านตนเอง/เจ้าของบ้าน</label>
-          <label class="radio-item"><input type="radio" name="housing" value="บ้านเช่า"> อยู่บ้านเช่า (เสียค่าเช่า)</label>
-          <label class="radio-item"><input type="radio" name="housing" value="อยู่กับผู้อื่น/อยู่ฟรี"> อยู่กับผู้อื่น/อยู่ฟรี</label>
-          <label class="radio-item"><input type="radio" name="housing" value="หอพัก"> หอพัก</label>
-        </div>
-        <div><label class="lbl">ค่าเช่า (บาท/เดือน)</label><input type="number" id="rent" placeholder="0" style="max-width:160px"></div>
-
-        <div class="sec-head">3.3 ลักษณะที่อยู่อาศัย (บันทึกสิ่งที่เห็น)</div>
-        <p class="lbl" style="margin-bottom:5px">วัสดุพื้นบ้าน (ที่ไม่ใช่ใต้ถุนบ้าน)</p>
-        <div class="check-group" style="margin-bottom:10px">
-          <label class="check-item"><input type="checkbox" name="floor" onchange="toggleClass(this,'sel')"> กระเบื้อง/เซรามิค</label>
-          <label class="check-item"><input type="checkbox" name="floor" onchange="toggleClass(this,'sel')"> ปาเก้/ไม้ขัดเงา</label>
-          <label class="check-item"><input type="checkbox" name="floor" onchange="toggleClass(this,'sel')"> ซีเมนต์เปลือย</label>
-          <label class="check-item"><input type="checkbox" name="floor" onchange="toggleClass(this,'sel')"> ไม้กระดาน</label>
-          <label class="check-item"><input type="checkbox" name="floor" onchange="toggleClass(this,'sel')"> ไวนิล/กระเบื้องยาง</label>
-          <label class="check-item"><input type="checkbox" name="floor" onchange="toggleClass(this,'sel')"> ไม้ไผ่</label>
-          <label class="check-item"><input type="checkbox" name="floor" onchange="toggleClass(this,'sel')"> ดิน/ทราย</label>
-        </div>
-        <p class="lbl" style="margin-bottom:5px">วัสดุฝาบ้าน</p>
-        <div class="check-group" style="margin-bottom:10px">
-          <label class="check-item"><input type="checkbox" name="wall" onchange="toggleClass(this,'sel')"> ฉาบซีเมนต์</label>
-          <label class="check-item"><input type="checkbox" name="wall" onchange="toggleClass(this,'sel')"> อิฐ/ก้อนปูน/อิฐบล็อก</label>
-          <label class="check-item"><input type="checkbox" name="wall" onchange="toggleClass(this,'sel')"> สังกะสี</label>
-          <label class="check-item"><input type="checkbox" name="wall" onchange="toggleClass(this,'sel')"> ไม้กระดาน</label>
-          <label class="check-item"><input type="checkbox" name="wall" onchange="toggleClass(this,'sel')"> ไม้อัด</label>
-          <label class="check-item"><input type="checkbox" name="wall" onchange="toggleClass(this,'sel')"> สมาร์ทบอร์ด/ไฟเบอร์/ซีเมนต์บอร์ด</label>
-          <label class="check-item"><input type="checkbox" name="wall" onchange="toggleClass(this,'sel')"> ไม้ไผ่/ท่อนไม้/เศษไม้</label>
-          <label class="check-item"><input type="checkbox" name="wall" onchange="toggleClass(this,'sel')"> ดิน/ไวนิล</label>
-        </div>
-        <p class="lbl" style="margin-bottom:5px">วัสดุหลังคา</p>
-        <div class="check-group" style="margin-bottom:10px">
-          <label class="check-item"><input type="checkbox" name="roof" onchange="toggleClass(this,'sel')"> โลหะ (สังกะสี/เหล็ก/อะลูมิเนียม)</label>
-          <label class="check-item"><input type="checkbox" name="roof" onchange="toggleClass(this,'sel')"> กระเบื้อง/เซรามิค</label>
-          <label class="check-item"><input type="checkbox" name="roof" onchange="toggleClass(this,'sel')"> ไม้กระดาน</label>
-          <label class="check-item"><input type="checkbox" name="roof" onchange="toggleClass(this,'sel')"> ใบไม้/วัสดุธรรมชาติ</label>
-          <label class="check-item"><input type="checkbox" name="roof" onchange="toggleClass(this,'sel')"> ไวนิล/กระดาษ/แผ่นพลาสติก</label>
-        </div>
-        <div style="margin-bottom:10px">
-          <p class="lbl" style="margin-bottom:5px">มีห้องส้วมในที่อยู่อาศัย/บริเวณบ้าน</p>
-          <div class="radio-group">
-            <label class="radio-item"><input type="radio" name="toilet" value="มี"> มี</label>
-            <label class="radio-item"><input type="radio" name="toilet" value="ไม่มี"> ไม่มี</label>
-          </div>
+        <div class="cg">
+          <label class="ci2"><input type="checkbox" name="bt" value="พิการ" onchange="tgl(this)">มีความพิการทางร่างกาย/สติปัญญา</label>
+          <label class="ci2"><input type="checkbox" name="bt" value="โรคเรื้อรัง" onchange="tgl(this)">มีโรคเรื้อรัง (ยกเว้น ความดัน/เบาหวาน)</label>
+          <label class="ci2"><input type="checkbox" name="bt" value="ผู้สูงอายุ" onchange="tgl(this)">ผู้สูงอายุตั้งแต่ 60 ปีขึ้นไป</label>
+          <label class="ci2"><input type="checkbox" name="bt" value="แม่เลี้ยงเดี่ยว" onchange="tgl(this)">เป็นพ่อ/แม่เลี้ยงเดี่ยว</label>
+          <label class="ci2"><input type="checkbox" name="bt" value="ว่างงาน" onchange="tgl(this)">มีคนอายุ 15-65 ปีว่างงาน</label>
         </div>
 
-        <div class="sec-head">3.4 ที่ดินทำการเกษตรได้ (รวมเช่า)</div>
-        <div class="radio-group">
-          <label class="radio-item"><input type="radio" name="agri" value="ไม่ทำเกษตร"> ไม่ทำเกษตร</label>
-          <label class="radio-item"><input type="radio" name="agri" value="น้อยกว่า 1 ไร่"> น้อยกว่า 1 ไร่</label>
-          <label class="radio-item"><input type="radio" name="agri" value="1 ถึง 5 ไร่"> 1 ถึง 5 ไร่</label>
-          <label class="radio-item"><input type="radio" name="agri" value="มากกว่า 5 ไร่"> มากกว่า 5 ไร่</label>
+        <div class="sh">3.2 การอยู่อาศัย</div>
+        <div class="rg" style="margin-bottom:6px">
+          <label class="ri"><input type="radio" name="housing" value="บ้านตนเอง/เจ้าของบ้าน">อยู่บ้านตนเอง/เจ้าของบ้าน</label>
+          <label class="ri"><input type="radio" name="housing" value="บ้านเช่า">อยู่บ้านเช่า</label>
+          <label class="ri"><input type="radio" name="housing" value="อยู่กับผู้อื่น/อยู่ฟรี">อยู่กับผู้อื่น/อยู่ฟรี</label>
+          <label class="ri"><input type="radio" name="housing" value="หอพัก">หอพัก</label>
+        </div>
+        <div><label class="lb">ค่าเช่า (บาท/เดือน)</label><input type="number" id="rent" placeholder="0" style="max-width:150px"></div>
+
+        <div class="sh">3.3 วัสดุพื้นบ้าน</div>
+        <div class="cg">
+          <label class="ci2"><input type="checkbox" name="fl" value="กระเบื้อง/เซรามิค" onchange="tgl(this)">กระเบื้อง/เซรามิค</label>
+          <label class="ci2"><input type="checkbox" name="fl" value="ปาเก้/ไม้ขัดเงา" onchange="tgl(this)">ปาเก้/ไม้ขัดเงา</label>
+          <label class="ci2"><input type="checkbox" name="fl" value="ซีเมนต์เปลือย" onchange="tgl(this)">ซีเมนต์เปลือย</label>
+          <label class="ci2"><input type="checkbox" name="fl" value="ไม้กระดาน" onchange="tgl(this)">ไม้กระดาน</label>
+          <label class="ci2"><input type="checkbox" name="fl" value="ไวนิล/กระเบื้องยาง" onchange="tgl(this)">ไวนิล/กระเบื้องยาง</label>
+          <label class="ci2"><input type="checkbox" name="fl" value="ไม้ไผ่" onchange="tgl(this)">ไม้ไผ่</label>
+          <label class="ci2"><input type="checkbox" name="fl" value="ดิน/ทราย" onchange="tgl(this)">ดิน/ทราย</label>
+          <label class="ci2"><input type="checkbox" name="fl" value="อื่น ๆ" onchange="tgl(this)">อื่น ๆ</label>
         </div>
 
-        <div class="sec-head">3.5 แหล่งน้ำดื่ม</div>
-        <div class="check-group">
-          <label class="check-item"><input type="checkbox" name="water" onchange="toggleClass(this,'sel')"> น้ำดื่มบรรจุขวด/ตู้หยอดน้ำ</label>
-          <label class="check-item"><input type="checkbox" name="water" onchange="toggleClass(this,'sel')"> น้ำประปา</label>
-          <label class="check-item"><input type="checkbox" name="water" onchange="toggleClass(this,'sel')"> น้ำบ่อ/น้ำบาดาล</label>
-          <label class="check-item"><input type="checkbox" name="water" onchange="toggleClass(this,'sel')"> น้ำฝน/น้ำประปาภูเขา/ลำธาร</label>
+        <div class="sh">วัสดุฝาบ้าน</div>
+        <div class="cg">
+          <label class="ci2"><input type="checkbox" name="wl" value="ฉาบซีเมนต์" onchange="tgl(this)">ฉาบซีเมนต์</label>
+          <label class="ci2"><input type="checkbox" name="wl" value="อิฐ/ก้อนปูน/อิฐบล็อก" onchange="tgl(this)">อิฐ/ก้อนปูน/อิฐบล็อก</label>
+          <label class="ci2"><input type="checkbox" name="wl" value="สังกะสี" onchange="tgl(this)">สังกะสี</label>
+          <label class="ci2"><input type="checkbox" name="wl" value="ไม้กระดาน" onchange="tgl(this)">ไม้กระดาน</label>
+          <label class="ci2"><input type="checkbox" name="wl" value="ไม้อัด" onchange="tgl(this)">ไม้อัด</label>
+          <label class="ci2"><input type="checkbox" name="wl" value="สมาร์ทบอร์ด/ไฟเบอร์/ซีเมนต์บอร์ด" onchange="tgl(this)">สมาร์ทบอร์ด/ไฟเบอร์</label>
+          <label class="ci2"><input type="checkbox" name="wl" value="ไม้ไผ่/ท่อนไม้/เศษไม้" onchange="tgl(this)">ไม้ไผ่/ท่อนไม้/เศษไม้</label>
+          <label class="ci2"><input type="checkbox" name="wl" value="ดิน/ไวนิล" onchange="tgl(this)">ดิน/ไวนิล</label>
         </div>
 
-        <div class="sec-head">3.6 แหล่งไฟฟ้า</div>
-        <div class="radio-group">
-          <label class="radio-item"><input type="radio" name="electric" value="ไม่มีไฟฟ้า"> ไม่มีไฟฟ้า</label>
-          <label class="radio-item"><input type="radio" name="electric" value="เครื่องปั่นไฟ/โซลาเซลล์"> เครื่องปั่นไฟ/โซลาเซลล์</label>
-          <label class="radio-item"><input type="radio" name="electric" value="ไฟต่อพ่วง/แบตเตอรี่"> ไฟต่อพ่วง/แบตเตอรี่</label>
-          <label class="radio-item"><input type="radio" name="electric" value="ไฟบ้านหรือมิเตอร์"> ไฟบ้านหรือมิเตอร์</label>
+        <div class="sh">วัสดุหลังคา</div>
+        <div class="cg">
+          <label class="ci2"><input type="checkbox" name="rf" value="โลหะ (สังกะสี/เหล็ก/อะลูมิเนียม)" onchange="tgl(this)">โลหะ (สังกะสี/เหล็ก/อะลูมิเนียม)</label>
+          <label class="ci2"><input type="checkbox" name="rf" value="กระเบื้อง/เซรามิค" onchange="tgl(this)">กระเบื้อง/เซรามิค</label>
+          <label class="ci2"><input type="checkbox" name="rf" value="ไม้กระดาน" onchange="tgl(this)">ไม้กระดาน</label>
+          <label class="ci2"><input type="checkbox" name="rf" value="ใบไม้/วัสดุธรรมชาติ" onchange="tgl(this)">ใบไม้/วัสดุธรรมชาติ</label>
+          <label class="ci2"><input type="checkbox" name="rf" value="ไวนิล/กระดาษ/แผ่นพลาสติก" onchange="tgl(this)">ไวนิล/กระดาษ/แผ่นพลาสติก</label>
+          <label class="ci2"><input type="checkbox" name="rf" value="อื่น ๆ" onchange="tgl(this)">อื่น ๆ</label>
         </div>
 
-        <div class="sec-head">3.7 ยานพาหนะในครัวเรือน (ที่ใช้งานได้)</div>
-        <div class="radio-group" style="margin-bottom:7px">
-          <label class="radio-item"><input type="radio" name="vehicle_has" value="ไม่มียานพาหนะ"> ไม่มียานพาหนะ</label>
-          <label class="radio-item"><input type="radio" name="vehicle_has" value="มียานพาหนะ"> มียานพาหนะ</label>
-        </div>
-        <div class="check-group">
-          <label class="check-item"><input type="checkbox" name="vehicle" onchange="toggleClass(this,'sel')"> รถยนต์นั่งส่วนบุคคล</label>
-          <label class="check-item"><input type="checkbox" name="vehicle" onchange="toggleClass(this,'sel')"> รถปิกอัพ/รถบรรทุกเล็ก/รถตู้</label>
-          <label class="check-item"><input type="checkbox" name="vehicle" onchange="toggleClass(this,'sel')"> รถไถ/รถเกี่ยวข้าว</label>
-          <label class="check-item"><input type="checkbox" name="vehicle" onchange="toggleClass(this,'sel')"> รถมอเตอร์ไซต์/เรือประมงพื้นบ้าน</label>
+        <div class="sh">ห้องส้วม</div>
+        <div class="rg"><label class="ri"><input type="radio" name="toilet" value="มี">มี</label><label class="ri"><input type="radio" name="toilet" value="ไม่มี">ไม่มี</label></div>
+
+        <div class="sh">3.4 ที่ดินทำการเกษตร</div>
+        <div class="rg">
+          <label class="ri"><input type="radio" name="agri" value="ไม่ทำเกษตร">ไม่ทำเกษตร</label>
+          <label class="ri"><input type="radio" name="agri" value="น้อยกว่า 1 ไร่">น้อยกว่า 1 ไร่</label>
+          <label class="ri"><input type="radio" name="agri" value="1 ถึง 5 ไร่">1 ถึง 5 ไร่</label>
+          <label class="ri"><input type="radio" name="agri" value="มากกว่า 5 ไร่">มากกว่า 5 ไร่</label>
         </div>
 
-        <div class="sec-head">3.8 ของใช้ในครัวเรือน (ที่ใช้งานได้)</div>
-        <div class="radio-group" style="margin-bottom:7px">
-          <label class="radio-item"><input type="radio" name="household_has" value="ไม่มีของใช้"> ไม่มีของใช้ดังกล่าว</label>
-          <label class="radio-item"><input type="radio" name="household_has" value="มีของใช้"> มีของใช้ดังกล่าว</label>
+        <div class="sh">3.5 แหล่งน้ำดื่ม</div>
+        <div class="cg">
+          <label class="ci2"><input type="checkbox" name="wt" value="น้ำดื่มบรรจุขวด/ตู้หยอดน้ำ" onchange="tgl(this)">น้ำดื่มบรรจุขวด/ตู้หยอดน้ำ</label>
+          <label class="ci2"><input type="checkbox" name="wt" value="น้ำประปา" onchange="tgl(this)">น้ำประปา</label>
+          <label class="ci2"><input type="checkbox" name="wt" value="น้ำบ่อ/น้ำบาดาล" onchange="tgl(this)">น้ำบ่อ/น้ำบาดาล</label>
+          <label class="ci2"><input type="checkbox" name="wt" value="น้ำฝน/น้ำประปาภูเขา/ลำธาร" onchange="tgl(this)">น้ำฝน/น้ำประปาภูเขา/ลำธาร</label>
         </div>
-        <div class="check-group">
-          <label class="check-item"><input type="checkbox" name="household" onchange="toggleClass(this,'sel')"> คอมพิวเตอร์</label>
-          <label class="check-item"><input type="checkbox" name="household" onchange="toggleClass(this,'sel')"> แอร์</label>
-          <label class="check-item"><input type="checkbox" name="household" onchange="toggleClass(this,'sel')"> ทีวีจอแบน</label>
-          <label class="check-item"><input type="checkbox" name="household" onchange="toggleClass(this,'sel')"> เครื่องซักผ้า</label>
-          <label class="check-item"><input type="checkbox" name="household" onchange="toggleClass(this,'sel')"> ตู้เย็น</label>
+
+        <div class="sh">3.6 แหล่งไฟฟ้า</div>
+        <div class="rg">
+          <label class="ri"><input type="radio" name="electric" value="ไม่มีไฟฟ้า">ไม่มีไฟฟ้า</label>
+          <label class="ri"><input type="radio" name="electric" value="เครื่องปั่นไฟ/โซลาเซลล์">เครื่องปั่นไฟ/โซลาเซลล์</label>
+          <label class="ri"><input type="radio" name="electric" value="ไฟต่อพ่วง/แบตเตอรี่">ไฟต่อพ่วง/แบตเตอรี่</label>
+          <label class="ri"><input type="radio" name="electric" value="ไฟบ้านหรือมิเตอร์">ไฟบ้านหรือมิเตอร์</label>
+        </div>
+
+        <div class="sh">3.7 ยานพาหนะ</div>
+        <div class="rg" style="margin-bottom:5px">
+          <label class="ri"><input type="radio" name="veh_has" value="ไม่มียานพาหนะ">ไม่มียานพาหนะ</label>
+          <label class="ri"><input type="radio" name="veh_has" value="มียานพาหนะ">มียานพาหนะ</label>
+        </div>
+        <div class="cg">
+          <label class="ci2"><input type="checkbox" name="veh" value="รถยนต์นั่งส่วนบุคคล" onchange="tgl(this)">รถยนต์นั่งส่วนบุคคล</label>
+          <label class="ci2"><input type="checkbox" name="veh" value="รถปิกอัพ/รถบรรทุกเล็ก/รถตู้" onchange="tgl(this)">รถปิกอัพ/รถบรรทุกเล็ก/รถตู้</label>
+          <label class="ci2"><input type="checkbox" name="veh" value="รถไถ/รถเกี่ยวข้าว" onchange="tgl(this)">รถไถ/รถเกี่ยวข้าว</label>
+          <label class="ci2"><input type="checkbox" name="veh" value="รถมอเตอร์ไซต์/เรือประมงพื้นบ้าน" onchange="tgl(this)">รถมอเตอร์ไซต์/เรือประมงพื้นบ้าน</label>
+        </div>
+
+        <div class="sh">3.8 ของใช้ในครัวเรือน</div>
+        <div class="rg" style="margin-bottom:5px">
+          <label class="ri"><input type="radio" name="hh_has" value="ไม่มีของใช้">ไม่มีของใช้ดังกล่าว</label>
+          <label class="ri"><input type="radio" name="hh_has" value="มีของใช้">มีของใช้ดังกล่าว</label>
+        </div>
+        <div class="cg">
+          <label class="ci2"><input type="checkbox" name="hh" value="คอมพิวเตอร์" onchange="tgl(this)">คอมพิวเตอร์</label>
+          <label class="ci2"><input type="checkbox" name="hh" value="แอร์" onchange="tgl(this)">แอร์</label>
+          <label class="ci2"><input type="checkbox" name="hh" value="ทีวีจอแบน" onchange="tgl(this)">ทีวีจอแบน</label>
+          <label class="ci2"><input type="checkbox" name="hh" value="เครื่องซักผ้า" onchange="tgl(this)">เครื่องซักผ้า</label>
+          <label class="ci2"><input type="checkbox" name="hh" value="ตู้เย็น" onchange="tgl(this)">ตู้เย็น</label>
         </div>
       </div>
-    </div><!-- /page3 -->
+    </div><!-- /p3 -->
 
-    <!-- ══ PAGE 4 ══════════════════════════════════════════ -->
-    <div id="page4" style="display:none">
+    <!-- PAGE 4 -->
+    <div id="p4" style="display:none">
       <div class="card">
-        <div class="card-title"><div class="card-icon">🚗</div>5. การเดินทางจากที่พักอาศัยไปโรงเรียน</div>
-        <div class="sec-head">วิธีเดินทางหลัก</div>
-        <div class="radio-group" style="margin-bottom:14px">
-          <label class="radio-item"><input type="radio" name="travel" value="เดิน"> เดิน</label>
-          <label class="radio-item"><input type="radio" name="travel" value="จักรยาน"> จักรยาน</label>
-          <label class="radio-item"><input type="radio" name="travel" value="รถโรงเรียน"> รถโรงเรียน</label>
-          <label class="radio-item"><input type="radio" name="travel" value="จักรยานยนต์ส่วนตัว"> จักรยานยนต์ส่วนตัว</label>
-          <label class="radio-item"><input type="radio" name="travel" value="รถส่วนตัว"> รถส่วนตัว</label>
-          <label class="radio-item"><input type="radio" name="travel" value="เรือส่วนตัว"> เรือส่วนตัว</label>
-          <label class="radio-item"><input type="radio" name="travel" value="จักรยานยนต์รับจ้าง"> จักรยานยนต์รับจ้าง</label>
-          <label class="radio-item"><input type="radio" name="travel" value="รถโดยสารประจำทาง/รับจ้าง"> รถโดยสารประจำทาง/รับจ้าง</label>
-          <label class="radio-item"><input type="radio" name="travel" value="เรือโดยสารประจำทาง/รับจ้าง"> เรือโดยสารประจำทาง/รับจ้าง</label>
+        <div class="ctitle"><div class="ci">🚗</div>5. การเดินทางจากที่พักอาศัยไปโรงเรียน</div>
+        <div class="sh">วิธีเดินทางหลัก</div>
+        <div class="rg" style="margin-bottom:12px">
+          <label class="ri"><input type="radio" name="travel" value="เดิน">เดิน</label>
+          <label class="ri"><input type="radio" name="travel" value="จักรยาน">จักรยาน</label>
+          <label class="ri"><input type="radio" name="travel" value="รถโรงเรียน">รถโรงเรียน</label>
+          <label class="ri"><input type="radio" name="travel" value="จักรยานยนต์ส่วนตัว">จักรยานยนต์ส่วนตัว</label>
+          <label class="ri"><input type="radio" name="travel" value="รถส่วนตัว">รถส่วนตัว</label>
+          <label class="ri"><input type="radio" name="travel" value="เรือส่วนตัว">เรือส่วนตัว</label>
+          <label class="ri"><input type="radio" name="travel" value="จักรยานยนต์รับจ้าง">จักรยานยนต์รับจ้าง</label>
+          <label class="ri"><input type="radio" name="travel" value="รถโดยสารประจำทาง/รับจ้าง">รถโดยสารประจำทาง/รับจ้าง</label>
+          <label class="ri"><input type="radio" name="travel" value="เรือโดยสารประจำทาง/รับจ้าง">เรือโดยสารประจำทาง/รับจ้าง</label>
         </div>
-        <div class="form-grid g4">
-          <div><label class="lbl">ระยะทาง (กม. ไป-กลับ/วัน)</label><input type="number" id="travel_km" placeholder="0.0" step="0.1"></div>
-          <div><label class="lbl">ใช้เวลา (ชั่วโมง ไป-กลับ/วัน)</label><input type="text" id="travel_time" placeholder="เช่น 1:30"></div>
-          <div><label class="lbl">ค่าใช้จ่ายเดินทาง (บาท/เดือน)</label><input type="number" id="travel_cost" placeholder="0"></div>
-          <div><label class="lbl">เงินนักเรียน/วัน (ไม่รวมค่าเดินทาง)</label><input type="number" id="std_money" placeholder="0"></div>
-        </div>
-      </div>
-
-      <div class="card">
-        <div class="card-title"><div class="card-icon">📍</div>6. ที่ตั้งที่พักอาศัยในปัจจุบัน</div>
-        <div class="form-grid g4">
-          <div><label class="lbl">บ้านเลขที่</label><input type="text" id="addr_no"></div>
-          <div><label class="lbl">หมู่ที่</label><input type="text" id="addr_moo"></div>
-          <div class="full" style="grid-column:span 2"><label class="lbl">ตรอก/ซอย/ถนน</label><input type="text" id="addr_street"></div>
-          <div><label class="lbl">ตำบล/แขวง</label><input type="text" id="addr_tambon"></div>
-          <div><label class="lbl">อำเภอ/เขต</label><input type="text" id="addr_amphoe"></div>
-          <div><label class="lbl">จังหวัด</label><input type="text" id="addr_province"></div>
-          <div><label class="lbl">รหัสไปรษณีย์</label><input type="text" id="addr_zip" maxlength="5"></div>
+        <div class="g g4">
+          <div><label class="lb">ระยะทาง (กม. ไป-กลับ/วัน)</label><input type="number" id="travel_km" placeholder="0.0" step="0.1"></div>
+          <div><label class="lb">เวลา (ชม. ไป-กลับ/วัน) เช่น 1:30</label><input type="text" id="travel_time" placeholder="1:30"></div>
+          <div><label class="lb">ค่าเดินทาง (บาท/เดือน)</label><input type="number" id="travel_cost" placeholder="0"></div>
+          <div><label class="lb">เงินนักเรียน/วัน (ไม่รวมค่าเดินทาง)</label><input type="number" id="std_money" placeholder="0"></div>
         </div>
       </div>
 
       <div class="card">
-        <div class="card-title"><div class="card-icon">📸</div>7. ภาพถ่ายที่พักอาศัย</div>
-        <div class="sec-head">ภาพที่พักอาศัยได้มาจาก</div>
-        <div class="radio-group" style="margin-bottom:16px">
-          <label class="radio-item"><input type="radio" name="photo_src" value="ครูลงเยี่ยมบ้านด้วยตนเอง"> คุณครูลงเยี่ยมบ้านด้วยตนเอง</label>
-          <label class="radio-item"><input type="radio" name="photo_src" value="ให้นักเรียนถ่ายภาพมาให้"> ให้นักเรียนถ่ายภาพมาให้</label>
+        <div class="ctitle"><div class="ci">📍</div>6. ที่ตั้งที่พักอาศัยในปัจจุบัน</div>
+        <div class="g g4">
+          <div><label class="lb">บ้านเลขที่</label><input type="text" id="addr_no"></div>
+          <div><label class="lb">หมู่ที่</label><input type="text" id="addr_moo"></div>
+          <div><label class="lb">ตรอก/ซอย</label><input type="text" id="addr_soi"></div>
+          <div><label class="lb">ถนน</label><input type="text" id="addr_road"></div>
+          <div><label class="lb">ตำบล/แขวง</label><input type="text" id="addr_tambon"></div>
+          <div><label class="lb">อำเภอ/เขต</label><input type="text" id="addr_amphoe"></div>
+          <div><label class="lb">จังหวัด</label><input type="text" id="addr_province"></div>
+          <div><label class="lb">รหัสไปรษณีย์</label><input type="text" id="addr_zip" maxlength="5"></div>
         </div>
-        <div class="form-grid g2">
+      </div>
+
+      <div class="card">
+        <div class="ctitle"><div class="ci">📸</div>7. ภาพถ่ายที่พักอาศัย</div>
+        <div class="sh">ภาพที่พักอาศัยได้มาจาก</div>
+        <div class="rg" style="margin-bottom:14px">
+          <label class="ri"><input type="radio" name="photo_src" value="ครูลงเยี่ยมบ้านด้วยตนเอง">คุณครูลงเยี่ยมบ้านด้วยตนเอง</label>
+          <label class="ri"><input type="radio" name="photo_src" value="ให้นักเรียนถ่ายภาพมาให้">ให้นักเรียนถ่ายภาพมาให้</label>
+        </div>
+        <div class="g g2">
           <div>
-            <p class="lbl" style="margin-bottom:6px">รูปที่ 1 — ภาพนอกที่พักอาศัย</p>
-            <p style="font-size:11px;color:var(--muted);margin-bottom:8px">กรุณาถ่ายให้เห็น หลังคาและฝาผนังของที่พักอาศัยทั้งหลัง</p>
-            <div class="photo-zone" id="zone_out">
-              <input type="file" accept="image/*" onchange="previewPhoto(this,'zone_out','prev_out')">
-              <div id="prev_out"><div class="ph-icon">🏠</div><p>อัปโหลดรูปภายนอก</p></div>
-            </div>
+            <p class="lb" style="margin-bottom:6px">รูปที่ 1 — ภาพนอกที่พักอาศัย</p>
+            <p style="font-size:11px;color:var(--muted);margin-bottom:7px">กรุณาถ่ายให้เห็น หลังคาและฝาผนังทั้งหลัง</p>
+            <div class="pz" id="z_out"><input type="file" accept="image/*" onchange="prevPhoto(this,'z_out','pd_out')"><div id="pd_out"><div class="pi">🏠</div><p class="ph">อัปโหลดรูปภายนอก</p></div></div>
           </div>
           <div>
-            <p class="lbl" style="margin-bottom:6px">รูปที่ 2 — ภาพในที่พักอาศัย</p>
-            <p style="font-size:11px;color:var(--muted);margin-bottom:8px">กรุณาถ่ายให้เห็น พื้นและบริเวณภายในของที่พักอาศัย</p>
-            <div class="photo-zone" id="zone_in">
-              <input type="file" accept="image/*" onchange="previewPhoto(this,'zone_in','prev_in')">
-              <div id="prev_in"><div class="ph-icon">🛋️</div><p>อัปโหลดรูปภายใน</p></div>
-            </div>
+            <p class="lb" style="margin-bottom:6px">รูปที่ 2 — ภาพในที่พักอาศัย</p>
+            <p style="font-size:11px;color:var(--muted);margin-bottom:7px">กรุณาถ่ายให้เห็น พื้นและบริเวณภายใน</p>
+            <div class="pz" id="z_in"><input type="file" accept="image/*" onchange="prevPhoto(this,'z_in','pd_in')"><div id="pd_in"><div class="pi">🛋️</div><p class="ph">อัปโหลดรูปภายใน</p></div></div>
           </div>
         </div>
       </div>
-    </div><!-- /page4 -->
+    </div><!-- /p4 -->
 
-    <!-- ══ PAGE 5 ══════════════════════════════════════════ -->
-    <div id="page5" style="display:none">
+    <!-- PAGE 5 -->
+    <div id="p5" style="display:none">
       <div class="card">
-        <div class="card-title"><div class="card-icon">✍️</div>8-10. การรับรองข้อมูล</div>
-        <div style="background:#fffbeb;border:1px solid #fcd34d;border-radius:8px;padding:12px;margin-bottom:16px;font-size:12px;color:#92400e">
+        <div class="ctitle"><div class="ci">✍️</div>8-10. การรับรองข้อมูล</div>
+        <div style="background:#fffbeb;border:1px solid #fcd34d;border-radius:8px;padding:10px;margin-bottom:14px;font-size:12px;color:#92400e">
           ข้าพเจ้าขอให้การรับรองว่าข้อมูลในข้อ 1 ถึงข้อ 7 ของแบบขอรับเงินอุดหนุนนักเรียนยากจนฉบับนี้ เป็นข้อมูลที่ถูกต้องของข้าพเจ้าจริง
         </div>
-        <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(220px,1fr));gap:18px">
-          <!-- Sig 1 -->
+        <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(200px,1fr));gap:16px">
           <div>
-            <p class="sec-head" style="margin-bottom:8px">ลายเซ็นนักเรียน</p>
-            <p style="font-size:11px;color:var(--muted);margin-bottom:6px">นักเรียนอายุเกิน 10 ปี ให้ลงนาม</p>
-            <div class="sig-wrap"><canvas class="sig-canvas" id="sig1" height="100"></canvas>
-              <div class="sig-actions"><span>วาดลายเซ็นที่นี่</span><button class="btn btn-outline btn-sm" onclick="clearSig('sig1')">ล้าง</button></div>
-            </div>
-            <div style="margin-top:7px"><label class="lbl">ชื่อ-นามสกุล</label><input type="text" id="sig1_name" placeholder="ชื่อนักเรียน"></div>
+            <p class="sh" style="margin-bottom:7px">ลายเซ็นนักเรียน</p>
+            <div class="sigwrap"><canvas class="sigc" id="s1" height="90"></canvas><div class="sigact"><span>วาดลายเซ็น</span><button class="btn bo bsm" onclick="clrSig('s1')">ล้าง</button></div></div>
+            <div style="margin-top:6px"><label class="lb">ชื่อ-นามสกุล</label><input type="text" id="sig1_name" placeholder="ชื่อนักเรียน"></div>
           </div>
-          <!-- Sig 2 -->
           <div>
-            <p class="sec-head" style="margin-bottom:8px">ลายเซ็นผู้ปกครอง</p>
-            <p style="font-size:11px;color:var(--muted);margin-bottom:6px">ผู้ปกครองลงนามยินยอมและรับรอง</p>
-            <div class="sig-wrap"><canvas class="sig-canvas" id="sig2" height="100"></canvas>
-              <div class="sig-actions"><span>วาดลายเซ็นที่นี่</span><button class="btn btn-outline btn-sm" onclick="clearSig('sig2')">ล้าง</button></div>
-            </div>
-            <div style="margin-top:7px"><label class="lbl">ชื่อ-นามสกุล</label><input type="text" id="sig2_name" placeholder="ชื่อผู้ปกครอง"></div>
+            <p class="sh" style="margin-bottom:7px">ลายเซ็นผู้ปกครอง</p>
+            <div class="sigwrap"><canvas class="sigc" id="s2" height="90"></canvas><div class="sigact"><span>วาดลายเซ็น</span><button class="btn bo bsm" onclick="clrSig('s2')">ล้าง</button></div></div>
+            <div style="margin-top:6px"><label class="lb">ชื่อ-นามสกุล</label><input type="text" id="sig2_name" placeholder="ชื่อผู้ปกครอง"></div>
           </div>
-          <!-- Sig 3 -->
           <div>
-            <p class="sec-head" style="margin-bottom:8px">ครูผู้เยี่ยมบ้าน/สำรวจข้อมูล</p>
-            <p style="font-size:11px;color:var(--muted);margin-bottom:6px">ได้แจ้งวัตถุประสงค์แก่ผู้ให้ข้อมูลแล้ว</p>
-            <div class="sig-wrap"><canvas class="sig-canvas" id="sig3" height="100"></canvas>
-              <div class="sig-actions"><span>วาดลายเซ็นที่นี่</span><button class="btn btn-outline btn-sm" onclick="clearSig('sig3')">ล้าง</button></div>
-            </div>
-            <div style="margin-top:7px"><label class="lbl">ชื่อ-นามสกุล</label><input type="text" id="sig3_name" placeholder="ชื่อครู"></div>
-            <div style="margin-top:5px"><label class="lbl">ตำแหน่ง</label><input type="text" id="sig3_pos" placeholder="เช่น ครู คศ.1"></div>
+            <p class="sh" style="margin-bottom:7px">ครูผู้เยี่ยมบ้าน/สำรวจข้อมูล</p>
+            <div class="sigwrap"><canvas class="sigc" id="s3" height="90"></canvas><div class="sigact"><span>วาดลายเซ็น</span><button class="btn bo bsm" onclick="clrSig('s3')">ล้าง</button></div></div>
+            <div style="margin-top:6px"><label class="lb">ชื่อ-นามสกุล</label><input type="text" id="sig3_name" placeholder="ชื่อครู"></div>
+            <div style="margin-top:5px"><label class="lb">ตำแหน่ง</label><input type="text" id="sig3_pos" placeholder="เช่น ครู คศ.1"></div>
           </div>
-          <!-- Sig 4 -->
           <div>
-            <p class="sec-head" style="margin-bottom:8px">เจ้าหน้าที่ของรัฐ (ข้อ 10)</p>
-            <p style="font-size:11px;color:var(--muted);margin-bottom:6px">รับรองการขาดแคลนทุนทรัพย์</p>
-            <div class="sig-wrap"><canvas class="sig-canvas" id="sig4" height="100"></canvas>
-              <div class="sig-actions"><span>วาดลายเซ็นที่นี่</span><button class="btn btn-outline btn-sm" onclick="clearSig('sig4')">ล้าง</button></div>
-            </div>
-            <div style="margin-top:7px"><label class="lbl">ชื่อ-นามสกุล</label><input type="text" id="sig4_name"></div>
-            <div style="margin-top:5px"><label class="lbl">เลขประชาชน</label><input type="text" id="sig4_id" class="id-input" maxlength="17"></div>
-            <div style="margin-top:5px"><label class="lbl">ตำแหน่ง</label><input type="text" id="sig4_pos"></div>
-            <div style="margin-top:7px;display:flex;gap:8px">
-              <label class="radio-item"><input type="radio" name="cert" value="ขอรับรอง"> ขอรับรอง</label>
-              <label class="radio-item"><input type="radio" name="cert" value="ไม่ขอรับรอง"> ไม่ขอรับรอง</label>
+            <p class="sh" style="margin-bottom:7px">เจ้าหน้าที่ของรัฐ</p>
+            <div class="sigwrap"><canvas class="sigc" id="s4" height="90"></canvas><div class="sigact"><span>วาดลายเซ็น</span><button class="btn bo bsm" onclick="clrSig('s4')">ล้าง</button></div></div>
+            <div style="margin-top:6px"><label class="lb">ชื่อ-นามสกุล</label><input type="text" id="sig4_name"></div>
+            <div style="margin-top:5px"><label class="lb">เลขประชาชน</label><input type="text" id="sig4_id" class="id-inp" maxlength="17"></div>
+            <div style="margin-top:5px"><label class="lb">ตำแหน่ง</label><input type="text" id="sig4_pos"></div>
+            <div style="margin-top:7px;display:flex;gap:7px">
+              <label class="ri"><input type="radio" name="cert" value="ขอรับรอง">ขอรับรอง</label>
+              <label class="ri"><input type="radio" name="cert" value="ไม่ขอรับรอง">ไม่ขอรับรอง</label>
             </div>
           </div>
-          <!-- Sig 5 -->
           <div>
-            <p class="sec-head" style="margin-bottom:8px">ผู้อำนวยการสถานศึกษา</p>
-            <p style="font-size:11px;color:var(--muted);margin-bottom:6px">รับรองสถานภาพนักเรียน</p>
-            <div class="sig-wrap"><canvas class="sig-canvas" id="sig5" height="100"></canvas>
-              <div class="sig-actions"><span>วาดลายเซ็นที่นี่</span><button class="btn btn-outline btn-sm" onclick="clearSig('sig5')">ล้าง</button></div>
-            </div>
-            <div style="margin-top:7px"><label class="lbl">ชื่อ-นามสกุล</label><input type="text" id="sig5_name" placeholder="ชื่อผู้อำนวยการ"></div>
+            <p class="sh" style="margin-bottom:7px">ผู้อำนวยการสถานศึกษา</p>
+            <div class="sigwrap"><canvas class="sigc" id="s5" height="90"></canvas><div class="sigact"><span>วาดลายเซ็น</span><button class="btn bo bsm" onclick="clrSig('s5')">ล้าง</button></div></div>
+            <div style="margin-top:6px"><label class="lb">ชื่อ-นามสกุล</label><input type="text" id="sig5_name" placeholder="ชื่อผู้อำนวยการ"></div>
           </div>
         </div>
-
-        <div style="margin-top:22px;text-align:center">
-          <button class="btn btn-success" style="font-size:15px;padding:13px 40px" onclick="saveRecord()" id="btnSave">
+        <div style="margin-top:18px;text-align:center">
+          <button class="btn bg" style="font-size:15px;padding:12px 38px" onclick="saveRec()" id="btnSave">
             💾 บันทึกข้อมูลไปยัง Google Sheets
           </button>
         </div>
       </div>
-    </div><!-- /page5 -->
+    </div><!-- /p5 -->
 
-  </div><!-- /form-container -->
+  </div><!-- /wrap -->
 
-  <div class="form-nav">
-    <button class="btn btn-outline" id="btnPrev" onclick="prevStep()" style="visibility:hidden">← ย้อนกลับ</button>
-    <span class="nav-info" id="navInfo">หน้า 1 จาก 5</span>
-    <button class="btn btn-primary" id="btnNext" onclick="nextStep()">ถัดไป →</button>
+  <div class="nav">
+    <button class="btn bo" id="btnPrev" onclick="prevS()" style="visibility:hidden">← ย้อนกลับ</button>
+    <span class="nv" id="navInfo">หน้า 1 จาก 5</span>
+    <button class="btn bp" id="btnNext" onclick="nextS()">ถัดไป →</button>
   </div>
-
 </div><!-- /tab-form -->
 
-<!-- ════════════════════════════════════════════════════════
-     TAB: SEARCH
-════════════════════════════════════════════════════════ -->
+<!-- ════════════ TAB: SEARCH ════════════ -->
 <div id="tab-search" style="display:none">
   <div class="panel">
     <div class="card">
-      <div class="card-title"><div class="card-icon">🔍</div>ค้นหานักเรียน</div>
-      <div class="form-grid g3">
-        <div><label class="lbl">ชั้นเรียน</label>
-          <select id="search_class" onchange="filterRecords()">
+      <div class="ctitle"><div class="ci">🔍</div>ค้นหานักเรียน</div>
+      <div class="g g3">
+        <div><label class="lb">ชั้นเรียน</label>
+          <select id="sCls" onchange="filter()">
             <option value="">-- ทุกชั้น --</option>
             <option>ป.1</option><option>ป.2</option><option>ป.3</option><option>ป.4</option><option>ป.5</option><option>ป.6</option>
             <option>ม.1</option><option>ม.2</option><option>ม.3</option><option>ม.4</option><option>ม.5</option><option>ม.6</option>
           </select>
         </div>
-        <div class="full"><label class="lbl">ค้นหาชื่อ-นามสกุล</label>
-          <input type="text" id="search_name" placeholder="พิมพ์ชื่อหรือนามสกุล..." oninput="filterRecords()">
-        </div>
+        <div class="full"><label class="lb">ค้นหาชื่อ-นามสกุล</label><input type="text" id="sName" placeholder="พิมพ์ชื่อหรือนามสกุล..." oninput="filter()"></div>
       </div>
-      <div style="margin-top:10px;display:flex;gap:8px">
-        <button class="btn btn-primary btn-sm" onclick="loadAllRecords()">🔄 โหลดข้อมูลจาก Sheets</button>
-        <span id="rec_count" style="font-size:12px;color:var(--muted);align-self:center"></span>
+      <div style="margin-top:9px;display:flex;gap:8px">
+        <button class="btn bp bsm" onclick="loadAll()">🔄 โหลดจาก Google Sheets</button>
+        <span id="recCnt" style="font-size:12px;color:var(--muted);align-self:center"></span>
       </div>
     </div>
-    <div id="search_results">
-      <div class="empty-state"><div class="ei">📋</div><p>กดปุ่ม "โหลดข้อมูล" เพื่อดึงรายการจาก Google Sheets</p></div>
-    </div>
+    <div id="sResults"><div class="empty"><div class="ei">📋</div><p>กด "โหลดจาก Google Sheets" เพื่อดึงข้อมูล</p></div></div>
   </div>
 </div>
 
-<!-- ════════════════════════════════════════════════════════
-     TAB: EXPORT
-════════════════════════════════════════════════════════ -->
+<!-- ════════════ TAB: EXPORT ════════════ -->
 <div id="tab-export" style="display:none">
   <div class="panel">
     <div class="card">
-      <div class="card-title"><div class="card-icon">📄</div>Export PDF แบบฟอร์ม กสศ.01</div>
-      <div class="form-grid g2">
-        <div><label class="lbl">เลือกชั้นเรียน</label>
-          <select id="exp_class" onchange="loadExportList()">
+      <div class="ctitle"><div class="ci">📄</div>Export PDF แบบฟอร์ม กสศ.01</div>
+      <div class="g g2">
+        <div><label class="lb">เลือกชั้นเรียน</label>
+          <select id="expCls" onchange="loadExpList()">
             <option value="">-- เลือกชั้น --</option>
             <option>ป.1</option><option>ป.2</option><option>ป.3</option><option>ป.4</option><option>ป.5</option><option>ป.6</option>
             <option>ม.1</option><option>ม.2</option><option>ม.3</option><option>ม.4</option><option>ม.5</option><option>ม.6</option>
           </select>
         </div>
-        <div><label class="lbl">เลือกนักเรียน</label>
-          <select id="exp_student"><option value="">-- เลือกนักเรียน --</option></select>
+        <div><label class="lb">เลือกนักเรียน</label>
+          <select id="expStd"><option value="">-- เลือกนักเรียน --</option></select>
         </div>
       </div>
-      <div style="margin-top:14px;display:flex;gap:10px;flex-wrap:wrap">
-        <button class="btn btn-primary" onclick="exportPDF()">🖨️ สร้าง PDF</button>
-        <button class="btn btn-outline" onclick="previewBeforeExport()">👁️ ดูตัวอย่าง</button>
+      <div style="margin-top:12px;display:flex;gap:9px;flex-wrap:wrap">
+        <button class="btn bp" onclick="doPDF()">🖨️ สร้าง PDF (ตรงต้นฉบับ กสศ.01)</button>
+        <button class="btn bo" onclick="doPreview()">👁️ ดูตัวอย่าง</button>
+      </div>
+      <div style="margin-top:10px;background:#e8f5e9;border-radius:8px;padding:10px;font-size:12px;color:#1b5e20">
+        ✅ PDF จะสร้างจาก <strong>pdf-template.html</strong> ที่มีโครงสร้างตรงต้นฉบับทุกหน้า (A4, 5 หน้า, รองรับภาษาไทย, ลายเซ็นดิจิทัล, รูปภาพ)
       </div>
     </div>
-    <div id="export_preview" style="margin-top:14px"></div>
+    <div id="expPreview" style="margin-top:12px"></div>
   </div>
 </div>
 
-<!-- Loading Spinner -->
-<div class="spinner-overlay" id="spinner" style="display:none">
-  <div class="spinner-box">
-    <div class="spinner"></div>
-    <p id="spinnerMsg">กำลังดำเนินการ...</p>
-  </div>
+<!-- Spinner -->
+<div class="spin-ov" id="spinner" style="display:none">
+  <div class="spin-box"><div class="spin"></div><p id="spinMsg">กำลังดำเนินการ...</p></div>
 </div>
 
 <!-- Toast -->
 <div class="toast" id="toast"></div>
 
-<!-- PDF Hidden Target -->
-<div id="pdf-target"></div>
+<!-- PDF iframe — โหลด pdf-template.html ไว้พร้อม -->
+<iframe id="pdf-iframe" src="pdf-template.html" onload="iframeReady=true"></iframe>
 
-<!-- ════════════════════════════════════════════════════════
-     JAVASCRIPT
-════════════════════════════════════════════════════════ -->
 <script>
-// ══════════════════════════════════════════════════════════
-//  CONFIG & STATE
-// ══════════════════════════════════════════════════════════
-let GAS_URL   = localStorage.getItem('kss01_api_url') || '';
-let records   = [];          // cache from Sheets
-let editingId = null;
-let currentStep = 1;
-let memberCount = 0;
+// ══════════════════════════════════════════
+//  STATE
+// ══════════════════════════════════════════
+let GAS  = localStorage.getItem('kss_url') || '';
+let recs = [];
+let eId  = null;
+let cur  = 1;
+let mc   = 0;
+let iframeReady = false;
 
-// ══════════════════════════════════════════════════════════
+// ══════════════════════════════════════════
 //  API URL
-// ══════════════════════════════════════════════════════════
-function saveApiUrl() {
-  const url = document.getElementById('apiUrlInput').value.trim();
-  if (!url.startsWith('https://script.google.com')) {
-    showToast('URL ไม่ถูกต้อง ต้องขึ้นต้นด้วย https://script.google.com', 'error'); return;
-  }
-  GAS_URL = url;
-  localStorage.setItem('kss01_api_url', url);
-  document.getElementById('configBanner').classList.add('hidden');
-  updateApiStatus(true);
-  showToast('✅ บันทึก URL สำเร็จ', 'success');
+// ══════════════════════════════════════════
+function saveUrl() {
+  const u = document.getElementById('apiIn').value.trim();
+  if (!u.startsWith('https://script.google.com')) { toast('URL ไม่ถูกต้อง','tErr'); return; }
+  GAS = u; localStorage.setItem('kss_url', u);
+  document.getElementById('cfgBar').style.display = 'none';
+  setConn(true); toast('✅ บันทึก URL สำเร็จ','tOK');
+}
+function setConn(ok) {
+  document.getElementById('apiDot').className = 'dot'+(ok?' on':'');
+  document.getElementById('apiStat').textContent = ok ? 'เชื่อมต่อแล้ว' : 'ยังไม่เชื่อมต่อ';
+}
+async function gas(payload) {
+  if (!GAS) { toast('กรุณาตั้งค่า API URL','tErr'); throw new Error('No URL'); }
+  const r = await fetch(GAS, { method:'POST', body: JSON.stringify(payload), headers:{'Content-Type':'text/plain'} });
+  if (!r.ok) throw new Error('HTTP '+r.status);
+  return r.json();
 }
 
-function updateApiStatus(ok) {
-  document.getElementById('apiDot').className   = 'api-dot' + (ok ? ' connected' : '');
-  document.getElementById('apiStatus').textContent = ok ? 'เชื่อมต่อแล้ว' : 'ยังไม่เชื่อมต่อ';
-}
-
-// ══════════════════════════════════════════════════════════
-//  GAS CALL
-// ══════════════════════════════════════════════════════════
-async function gasCall(payload) {
-  if (!GAS_URL) { showToast('กรุณาตั้งค่า API URL ก่อน', 'error'); throw new Error('No API URL'); }
-  const res = await fetch(GAS_URL, {
-    method: 'POST',
-    body: JSON.stringify(payload),
-    headers: { 'Content-Type': 'text/plain' }  // avoid CORS preflight
-  });
-  if (!res.ok) throw new Error('HTTP ' + res.status);
-  return res.json();
-}
-
-// ══════════════════════════════════════════════════════════
+// ══════════════════════════════════════════
 //  TABS
-// ══════════════════════════════════════════════════════════
-function switchTab(tab, btn) {
-  ['form','search','export'].forEach(t => {
-    document.getElementById('tab-'+t).style.display = t===tab ? 'block' : 'none';
-  });
-  document.querySelectorAll('.main-tabs button').forEach(b => b.classList.remove('active'));
-  btn.classList.add('active');
-  if (tab === 'search') loadAllRecords();
+// ══════════════════════════════════════════
+function tab(t, btn) {
+  ['form','search','export'].forEach(x => document.getElementById('tab-'+x).style.display = x===t?'block':'none');
+  document.querySelectorAll('.tabs button').forEach(b => b.classList.remove('on'));
+  btn.classList.add('on');
+  if (t==='search') loadAll();
 }
 
-// ══════════════════════════════════════════════════════════
+// ══════════════════════════════════════════
 //  STEPS
-// ══════════════════════════════════════════════════════════
-function goStep(n) {
-  document.getElementById('page'+currentStep).style.display = 'none';
-  document.getElementById('page'+n).style.display = 'block';
-  currentStep = n;
-  updateStepUI();
-  if (n === 5) ['sig1','sig2','sig3','sig4','sig5'].forEach(initSig);
-  window.scrollTo({ top: 0, behavior: 'smooth' });
+// ══════════════════════════════════════════
+function go(n) {
+  document.getElementById('p'+cur).style.display='none';
+  document.getElementById('p'+n).style.display='block';
+  cur=n; updStep();
+  if(n===5) ['s1','s2','s3','s4','s5'].forEach(initSig);
+  window.scrollTo({top:0,behavior:'smooth'});
 }
-function nextStep() { if (currentStep < 5) goStep(currentStep + 1); }
-function prevStep() { if (currentStep > 1) goStep(currentStep - 1); }
-
-function updateStepUI() {
-  document.querySelectorAll('.step').forEach((s, i) => {
-    s.classList.remove('active','done');
-    if (i+1 < currentStep) s.classList.add('done');
-    if (i+1 === currentStep) s.classList.add('active');
-  });
-  document.getElementById('navInfo').textContent = `หน้า ${currentStep} จาก 5`;
-  document.getElementById('btnPrev').style.visibility = currentStep > 1 ? 'visible' : 'hidden';
-  const btnNext = document.getElementById('btnNext');
-  if (currentStep === 5) { btnNext.textContent = ''; btnNext.style.display = 'none'; }
-  else { btnNext.style.display = ''; btnNext.textContent = 'ถัดไป →'; }
+function nextS() { if(cur<5) go(cur+1); }
+function prevS() { if(cur>1) go(cur-1); }
+function updStep() {
+  document.querySelectorAll('.step').forEach((s,i)=>{s.classList.remove('cur','done');if(i+1<cur)s.classList.add('done');if(i+1===cur)s.classList.add('cur');});
+  document.getElementById('navInfo').textContent=`หน้า ${cur} จาก 5`;
+  document.getElementById('btnPrev').style.visibility=cur>1?'visible':'hidden';
+  const bn=document.getElementById('btnNext');
+  if(cur===5){bn.style.display='none';}else{bn.style.display='';bn.textContent='ถัดไป →';}
 }
 
-// ══════════════════════════════════════════════════════════
+// ══════════════════════════════════════════
 //  MEMBERS
-// ══════════════════════════════════════════════════════════
-function addMember(data) {
-  if (memberCount >= 10) { showToast('รับได้สูงสุด 10 คน', 'error'); return; }
-  memberCount++;
-  const n = memberCount;
-  const d = data || {};
-  const eduOpts = ['','ไม่ได้เรียน','ประถม','มัธยมต้น','มัธยมปลาย','อนุปริญญา','ปริญญา']
-    .map(o => `<option ${o===d.edu?'selected':''}>${o}</option>`).join('');
-  const tr = document.createElement('tr');
-  tr.id = 'mr_'+n;
-  tr.innerHTML = `
-    <td>${n}</td>
-    <td><input type="text" id="m${n}_name" value="${d.name||''}" placeholder="ชื่อ-นามสกุล"></td>
-    <td><input type="text" id="m${n}_rel" value="${d.rel||''}" placeholder="ความสัมพันธ์" style="width:75px"></td>
-    <td><input type="text" id="m${n}_pid" value="${d.pid||''}" placeholder="เลขประชาชน" style="width:115px"></td>
-    <td><select id="m${n}_edu" style="font-size:11px;padding:3px;border:1px solid var(--border);border-radius:4px;width:72px">${eduOpts}</select></td>
-    <td><input type="number" id="m${n}_age" value="${d.age||''}" style="width:42px"></td>
-    <td><input type="checkbox" id="m${n}_dis" ${d.disabled?'checked':''}></td>
-    <td><input type="checkbox" id="m${n}_chr" ${d.chronic?'checked':''}></td>
-    <td><input type="number" id="m${n}_w" value="${d.wage||''}" oninput="calcIncome()" placeholder="0" style="width:65px"></td>
-    <td><input type="number" id="m${n}_a" value="${d.agri||''}" oninput="calcIncome()" placeholder="0" style="width:65px"></td>
-    <td><input type="number" id="m${n}_b" value="${d.biz||''}"  oninput="calcIncome()" placeholder="0" style="width:65px"></td>
-    <td><input type="number" id="m${n}_wf" value="${d.welf||''}" oninput="calcIncome()" placeholder="0" style="width:65px"></td>
-    <td><input type="number" id="m${n}_o" value="${d.other||''}" oninput="calcIncome()" placeholder="0" style="width:65px"></td>
-    <td id="m${n}_tot" style="font-weight:700;color:var(--primary)">0</td>
-    <td><button class="del-btn" onclick="delMember(${n})">🗑️</button></td>`;
-  document.getElementById('memberBody').appendChild(tr);
-  calcIncome();
+// ══════════════════════════════════════════
+function addMem(d={}) {
+  if(mc>=10){toast('สูงสุด 10 คน','tErr');return;}
+  mc++;const n=mc;
+  const eo=['','ไม่ได้เรียน','ประถม','มัธยมต้น','มัธยมปลาย','อนุปริญญา','ปริญญา'].map(o=>`<option ${o===d.edu?'selected':''}>${o}</option>`).join('');
+  const tr=document.createElement('tr'); tr.id='mr'+n;
+  tr.innerHTML=`<td>${n}</td>
+    <td><input type="text" id="mn${n}" value="${d.name||''}" placeholder="ชื่อ-นามสกุล" style="min-width:110px"></td>
+    <td><input type="text" id="mr${n}" value="${d.rel||''}" style="width:70px"></td>
+    <td><input type="text" id="mp${n}" value="${d.pid||''}" style="width:106px"></td>
+    <td><select id="me${n}" style="font-size:11px;padding:2px;border:1px solid var(--border);border-radius:4px;width:68px">${eo}</select></td>
+    <td><input type="number" id="ma${n}" value="${d.age||''}" style="width:38px"></td>
+    <td><input type="checkbox" id="md${n}" ${d.disabled?'checked':''}></td>
+    <td><input type="checkbox" id="mc${n}" ${d.chronic?'checked':''}></td>
+    <td><input type="number" id="mw${n}" value="${d.wage||''}" oninput="calcInc()" placeholder="0" style="width:58px"></td>
+    <td><input type="number" id="mag${n}" value="${d.agri||''}" oninput="calcInc()" placeholder="0" style="width:58px"></td>
+    <td><input type="number" id="mb${n}" value="${d.biz||''}" oninput="calcInc()" placeholder="0" style="width:58px"></td>
+    <td><input type="number" id="mwf${n}" value="${d.welf||''}" oninput="calcInc()" placeholder="0" style="width:58px"></td>
+    <td><input type="number" id="mo${n}" value="${d.other||''}" oninput="calcInc()" placeholder="0" style="width:58px"></td>
+    <td id="mt${n}" style="font-weight:700;color:var(--p);white-space:nowrap">0</td>
+    <td><button class="delbtn" onclick="delMem(${n})">🗑️</button></td>`;
+  document.getElementById('mBody').appendChild(tr);
+  calcInc();
 }
-
-function delMember(n) {
-  const r = document.getElementById('mr_'+n);
-  if (r) r.remove();
-  calcIncome();
-}
-
-function calcIncome() {
-  let total = 0, count = 0;
-  for (let i = 1; i <= memberCount; i++) {
-    if (!document.getElementById('mr_'+i)) continue;
-    const g = id => parseFloat(document.getElementById(id)?.value || 0) || 0;
-    const t = g(`m${i}_w`) + g(`m${i}_a`) + g(`m${i}_b`) + g(`m${i}_wf`) + g(`m${i}_o`);
-    const el = document.getElementById(`m${i}_tot`);
-    if (el) { el.textContent = t.toLocaleString('th'); total += t; count++; }
+function delMem(n){const r=document.getElementById('mr'+n);if(r)r.remove();calcInc();}
+function calcInc(){
+  let T=0,C=0;
+  for(let i=1;i<=mc;i++){
+    if(!document.getElementById('mr'+i))continue;
+    const g=id=>parseFloat(document.getElementById(id)?.value||0)||0;
+    const t=g(`mw${i}`)+g(`mag${i}`)+g(`mb${i}`)+g(`mwf${i}`)+g(`mo${i}`);
+    const el=document.getElementById(`mt${i}`);if(el){el.textContent=t.toLocaleString('th');T+=t;C++;}
   }
-  document.getElementById('total_income').textContent = total.toLocaleString('th');
-  document.getElementById('avg_income').textContent   = count > 0 ? Math.round(total/count).toLocaleString('th') : '0';
+  document.getElementById('ti').textContent=T.toLocaleString('th');
+  document.getElementById('ai').textContent=C?Math.round(T/C).toLocaleString('th'):'0';
 }
 
-// ══════════════════════════════════════════════════════════
-//  PHOTO PREVIEW
-// ══════════════════════════════════════════════════════════
-function previewPhoto(input, zoneId, prevId) {
-  const file = input.files[0];
-  if (!file) return;
-  // Resize to max 800px before storing
-  const img = new Image();
-  img.onload = () => {
-    const maxW = 800, maxH = 800;
-    let w = img.width, h = img.height;
-    if (w > maxW) { h = Math.round(h * maxW / w); w = maxW; }
-    if (h > maxH) { w = Math.round(w * maxH / h); h = maxH; }
-    const canvas = document.createElement('canvas');
-    canvas.width = w; canvas.height = h;
-    canvas.getContext('2d').drawImage(img, 0, 0, w, h);
-    const data = canvas.toDataURL('image/jpeg', 0.82);
-    const el = document.getElementById(prevId);
-    el.innerHTML = `<img src="${data}">`;
-    el.dataset.src = data;
+// ══════════════════════════════════════════
+//  PHOTO
+// ══════════════════════════════════════════
+function prevPhoto(inp,zid,pid){
+  const file=inp.files[0];if(!file)return;
+  const img=new Image();
+  img.onload=()=>{
+    const mw=800,mh=800;let w=img.width,h=img.height;
+    if(w>mw){h=Math.round(h*mw/w);w=mw;}if(h>mh){w=Math.round(w*mh/h);h=mh;}
+    const c=document.createElement('canvas');c.width=w;c.height=h;
+    c.getContext('2d').drawImage(img,0,0,w,h);
+    const d=c.toDataURL('image/jpeg',.82);
+    const el=document.getElementById(pid);
+    el.innerHTML=`<img src="${d}" style="max-width:100%;max-height:140px;border-radius:6px;object-fit:cover">`;
+    el.dataset.src=d;
   };
-  img.src = URL.createObjectURL(file);
+  img.src=URL.createObjectURL(file);
 }
 
-// ══════════════════════════════════════════════════════════
-//  SIGNATURE PAD
-// ══════════════════════════════════════════════════════════
-function initSig(id) {
-  const canvas = document.getElementById(id);
-  if (!canvas || canvas._init) return;
-  canvas._init = true;
-  canvas.width = canvas.offsetWidth || 280;
-  const ctx = canvas.getContext('2d');
-  let drawing = false;
-  const pos = (e, c) => { const r = c.getBoundingClientRect(); return [e.clientX-r.left, e.clientY-r.top]; };
-  canvas.addEventListener('mousedown', e => { drawing=true; ctx.beginPath(); ctx.moveTo(...pos(e,canvas)); });
-  canvas.addEventListener('mousemove', e => { if (!drawing) return; ctx.lineTo(...pos(e,canvas)); ctx.strokeStyle='#1a56db'; ctx.lineWidth=2; ctx.lineCap='round'; ctx.stroke(); });
-  canvas.addEventListener('mouseup',   () => drawing=false);
-  canvas.addEventListener('mouseleave',() => drawing=false);
-  canvas.addEventListener('touchstart', e => { e.preventDefault(); drawing=true; ctx.beginPath(); ctx.moveTo(...pos(e.touches[0],canvas)); }, {passive:false});
-  canvas.addEventListener('touchmove',  e => { e.preventDefault(); if(!drawing) return; ctx.lineTo(...pos(e.touches[0],canvas)); ctx.strokeStyle='#1a56db'; ctx.lineWidth=2; ctx.lineCap='round'; ctx.stroke(); }, {passive:false});
-  canvas.addEventListener('touchend',   () => drawing=false);
+// ══════════════════════════════════════════
+//  SIG PAD
+// ══════════════════════════════════════════
+function initSig(id){
+  const c=document.getElementById(id);if(!c||c._si)return;c._si=true;
+  c.width=c.offsetWidth||280;
+  const ctx=c.getContext('2d');let draw=false;
+  const pos=(e,cv)=>{const r=cv.getBoundingClientRect();return[e.clientX-r.left,e.clientY-r.top];};
+  c.addEventListener('mousedown',e=>{draw=true;ctx.beginPath();ctx.moveTo(...pos(e,c));});
+  c.addEventListener('mousemove',e=>{if(!draw)return;ctx.lineTo(...pos(e,c));ctx.strokeStyle='#1a56db';ctx.lineWidth=2;ctx.lineCap='round';ctx.stroke();});
+  c.addEventListener('mouseup',()=>draw=false);c.addEventListener('mouseleave',()=>draw=false);
+  c.addEventListener('touchstart',e=>{e.preventDefault();draw=true;ctx.beginPath();ctx.moveTo(...pos(e.touches[0],c));},{passive:false});
+  c.addEventListener('touchmove',e=>{e.preventDefault();if(!draw)return;ctx.lineTo(...pos(e.touches[0],c));ctx.strokeStyle='#1a56db';ctx.lineWidth=2;ctx.lineCap='round';ctx.stroke();},{passive:false});
+  c.addEventListener('touchend',()=>draw=false);
 }
-function clearSig(id) {
-  const c = document.getElementById(id);
-  c.getContext('2d').clearRect(0, 0, c.width, c.height);
-}
+function clrSig(id){const c=document.getElementById(id);if(c){c.getContext('2d').clearRect(0,0,c.width,c.height);c._si=false;}}
 
-// ══════════════════════════════════════════════════════════
-//  COLLECT FORM DATA
-// ══════════════════════════════════════════════════════════
-function collectFormData() {
-  const g = id => document.getElementById(id)?.value?.trim() || '';
-  const radio = name => document.querySelector(`input[name="${name}"]:checked`)?.value || '';
-  const checks = name => [...document.querySelectorAll(`input[name="${name}"]:checked`)].map(i=>i.value);
-  const sigData = id => { const c=document.getElementById(id); return c ? c.toDataURL() : ''; };
-  const photoData = id => document.getElementById(id)?.dataset?.src || '';
-
-  const members = [];
-  for (let i = 1; i <= memberCount; i++) {
-    if (!document.getElementById('mr_'+i)) continue;
-    const gm = id => document.getElementById(id)?.value?.trim() || '';
-    const total = ['w','a','b','wf','o'].reduce((s,k) => s + (parseFloat(document.getElementById(`m${i}_${k}`)?.value||0)||0), 0);
-    members.push({
-      name: gm(`m${i}_name`), rel: gm(`m${i}_rel`), pid: gm(`m${i}_pid`),
-      edu: document.getElementById(`m${i}_edu`)?.value||'', age: gm(`m${i}_age`),
-      disabled: document.getElementById(`m${i}_dis`)?.checked||false,
-      chronic:  document.getElementById(`m${i}_chr`)?.checked||false,
-      wage: gm(`m${i}_w`), agri: gm(`m${i}_a`), biz: gm(`m${i}_b`),
-      welf: gm(`m${i}_wf`), other: gm(`m${i}_o`), total
-    });
+// ══════════════════════════════════════════
+//  COLLECT
+// ══════════════════════════════════════════
+function collect(){
+  const v=id=>document.getElementById(id)?.value?.trim()||'';
+  const rd=n=>document.querySelector(`input[name="${n}"]:checked`)?.value||'';
+  const cbs=n=>[...document.querySelectorAll(`input[name="${n}"]:checked`)].map(i=>i.value);
+  const sig=id=>{const c=document.getElementById(id);return c?c.toDataURL():'';};
+  const ph=id=>document.getElementById(id)?.dataset?.src||'';
+  const mems=[];
+  for(let i=1;i<=mc;i++){
+    if(!document.getElementById('mr'+i))continue;
+    const gm=id=>document.getElementById(id)?.value?.trim()||'';
+    const tot=['w','ag','b','wf','o'].reduce((s,k)=>s+(parseFloat(document.getElementById(`m${k}${i}`)?.value||0)||0),0);
+    mems.push({name:gm(`mn${i}`),rel:gm(`mr${i}`),pid:gm(`mp${i}`),edu:document.getElementById(`me${i}`)?.value||'',age:gm(`ma${i}`),
+      disabled:document.getElementById(`md${i}`)?.checked||false,chronic:document.getElementById(`mc${i}`)?.checked||false,
+      wage:gm(`mw${i}`),agri:gm(`mag${i}`),biz:gm(`mb${i}`),welf:gm(`mwf${i}`),other:gm(`mo${i}`),total:tot});
   }
-
-  return {
-    id: editingId || null,
-    school: g('school'), affiliation: g('affiliation'),
-    std_fname: g('std_fname'), std_lname: g('std_lname'),
-    std_class: g('std_class'), std_id: g('std_id'),
-    family_status: radio('family_status'), live_with: radio('live_with'),
-    grd_fname: g('grd_fname'), grd_lname: g('grd_lname'), grd_rel: g('grd_rel'),
-    grd_edu: g('grd_edu'), grd_job: g('grd_job'), grd_phone: g('grd_phone'),
-    grd_id: g('grd_id'), welfare: document.getElementById('welfare')?.checked||false,
-    members, memberCount: members.length,
-    total_income: document.getElementById('total_income').textContent,
-    avg_income:   document.getElementById('avg_income').textContent,
-    burden: radio('burden'), burden_type: checks('burden_type'),
-    housing: radio('housing'), rent: g('rent'), toilet: radio('toilet'),
-    floor_mat: checks('floor'), wall_mat: checks('wall'), roof_mat: checks('roof'),
-    agri: radio('agri'), water: checks('water'), electric: radio('electric'),
-    vehicle_has: radio('vehicle_has'), vehicles: checks('vehicle'),
-    household_has: radio('household_has'), household: checks('household'),
-    travel: radio('travel'), travel_km: g('travel_km'), travel_time: g('travel_time'),
-    travel_cost: g('travel_cost'), std_money: g('std_money'),
-    photo_src: radio('photo_src'),
-    addr_no: g('addr_no'), addr_moo: g('addr_moo'), addr_street: g('addr_street'),
-    addr_tambon: g('addr_tambon'), addr_amphoe: g('addr_amphoe'),
-    addr_province: g('addr_province'), addr_zip: g('addr_zip'),
-    sig1_name: g('sig1_name'), sig2_name: g('sig2_name'),
-    sig3_name: g('sig3_name'), sig3_pos: g('sig3_pos'),
-    sig4_name: g('sig4_name'), sig4_id: g('sig4_id'), sig4_pos: g('sig4_pos'),
-    sig5_name: g('sig5_name'), cert: radio('cert'),
-    sigs: { sig1: sigData('sig1'), sig2: sigData('sig2'), sig3: sigData('sig3'), sig4: sigData('sig4'), sig5: sigData('sig5') },
-    photos: { prev_student: photoData('prev_student'), prev_out: photoData('prev_out'), prev_in: photoData('prev_in') },
-    savedAt: new Date().toLocaleString('th-TH')
+  return{
+    id:eId||null,school:v('school'),affiliation:v('affiliation'),
+    std_fname:v('std_fname'),std_lname:v('std_lname'),std_class:v('std_class'),std_id:v('std_id'),
+    family_status:rd('family_status'),live_with:rd('live_with'),
+    grd_fname:v('grd_fname'),grd_lname:v('grd_lname'),grd_rel:v('grd_rel'),
+    grd_edu:v('grd_edu'),grd_job:v('grd_job'),grd_phone:v('grd_phone'),
+    grd_id:v('grd_id'),welfare:document.getElementById('welfare')?.checked||false,
+    no_grd_id:document.getElementById('no_grd_id')?.checked||false,
+    members:mems,memberCount:mems.length,
+    total_income:document.getElementById('ti').textContent,
+    avg_income:document.getElementById('ai').textContent,
+    burden:rd('burden'),burden_type:cbs('bt'),
+    housing:rd('housing'),rent:v('rent'),toilet:rd('toilet'),
+    floor_mat:cbs('fl'),wall_mat:cbs('wl'),roof_mat:cbs('rf'),
+    agri:rd('agri'),water:cbs('wt'),electric:rd('electric'),
+    vehicle_has:rd('veh_has'),vehicles:cbs('veh'),
+    household_has:rd('hh_has'),household:cbs('hh'),
+    travel:rd('travel'),travel_km:v('travel_km'),travel_time:v('travel_time'),
+    travel_cost:v('travel_cost'),std_money:v('std_money'),
+    photo_src:rd('photo_src'),
+    addr_no:v('addr_no'),addr_moo:v('addr_moo'),addr_soi:v('addr_soi'),addr_road:v('addr_road'),
+    addr_tambon:v('addr_tambon'),addr_amphoe:v('addr_amphoe'),addr_province:v('addr_province'),addr_zip:v('addr_zip'),
+    sig1_name:v('sig1_name'),sig2_name:v('sig2_name'),
+    sig3_name:v('sig3_name'),sig3_pos:v('sig3_pos'),
+    sig4_name:v('sig4_name'),sig4_id:v('sig4_id'),sig4_pos:v('sig4_pos'),
+    sig5_name:v('sig5_name'),cert:rd('cert'),
+    sigs:{sig1:sig('s1'),sig2:sig('s2'),sig3:sig('s3'),sig4:sig('s4'),sig5:sig('s5')},
+    photos:{prev_student:ph('pd_std'),prev_out:ph('pd_out'),prev_in:ph('pd_in')},
+    cert_confirm:true,pdpa_accept:true,
+    savedAt:new Date().toLocaleString('th-TH')
   };
 }
 
-// ══════════════════════════════════════════════════════════
+// ══════════════════════════════════════════
 //  SAVE
-// ══════════════════════════════════════════════════════════
-async function saveRecord() {
-  const data = collectFormData();
-  if (!data.std_fname) { showToast('กรุณากรอกชื่อนักเรียน', 'error'); return; }
-
-  showSpinner('กำลังบันทึกข้อมูลไปยัง Google Sheets...');
-  try {
-    const action = editingId ? 'update' : 'save';
-    const res = await gasCall({ action, data });
-    hideSpinner();
-    if (res.success) {
-      showToast('✅ บันทึกสำเร็จ! ID: ' + (res.id || editingId), 'success');
-      editingId = null;
-      resetForm();
-    } else {
-      showToast('❌ ' + (res.message || 'บันทึกไม่สำเร็จ'), 'error');
-    }
-  } catch (e) {
-    hideSpinner();
-    showToast('❌ เชื่อมต่อ API ไม่ได้: ' + e.message, 'error');
-  }
+// ══════════════════════════════════════════
+async function saveRec(){
+  const d=collect();
+  if(!d.std_fname){toast('กรุณากรอกชื่อนักเรียน','tErr');return;}
+  spin('กำลังบันทึกข้อมูลไปยัง Google Sheets...');
+  try{
+    const res=await gas({action:eId?'update':'save',data:d});
+    offSpin();
+    if(res.success){toast('✅ บันทึกสำเร็จ! ID: '+(res.id||eId),'tOK');eId=null;resetForm();}
+    else toast('❌ '+res.message,'tErr');
+  }catch(e){offSpin();toast('❌ '+e.message,'tErr');}
 }
 
-// ══════════════════════════════════════════════════════════
-//  RESET FORM
-// ══════════════════════════════════════════════════════════
-function resetForm() {
-  document.querySelectorAll('#tab-form input[type=text], #tab-form input[type=number], #tab-form input[type=tel]')
-    .forEach(i => i.value = '');
-  document.querySelectorAll('#tab-form select').forEach(s => s.selectedIndex = 0);
-  document.querySelectorAll('#tab-form input[type=radio], #tab-form input[type=checkbox]')
-    .forEach(c => { c.checked = false; c.closest('.radio-item,  .check-item')?.classList.remove('sel'); });
-  document.getElementById('memberBody').innerHTML = '';
-  memberCount = 0;
-  ['sig1','sig2','sig3','sig4','sig5'].forEach(id => {
-    const c = document.getElementById(id);
-    if (c) { c.getContext('2d').clearRect(0,0,c.width,c.height); c._init = false; }
+// ══════════════════════════════════════════
+//  RESET
+// ══════════════════════════════════════════
+function resetForm(){
+  document.querySelectorAll('#tab-form input[type=text],#tab-form input[type=number],#tab-form input[type=tel]').forEach(i=>i.value='');
+  document.querySelectorAll('#tab-form select').forEach(s=>s.selectedIndex=0);
+  document.querySelectorAll('#tab-form input[type=radio],#tab-form input[type=checkbox]').forEach(c=>{c.checked=false;c.closest('.ri,.ci2')?.classList.remove('sel');});
+  document.getElementById('mBody').innerHTML='';mc=0;
+  ['s1','s2','s3','s4','s5'].forEach(id=>{const c=document.getElementById(id);if(c){c.getContext('2d').clearRect(0,0,c.width,c.height);c._si=false;}});
+  ['pd_std','pd_out','pd_in'].forEach(id=>{
+    const ico={pd_std:'📷',pd_out:'🏠',pd_in:'🛋️'};
+    const lbl={pd_std:'อัปโหลดรูป',pd_out:'อัปโหลดรูปภายนอก',pd_in:'อัปโหลดรูปภายใน'};
+    const el=document.getElementById(id);
+    if(el){el.innerHTML=`<div class="pi">${ico[id]}</div><p class="ph">${lbl[id]}</p>`;el.dataset.src='';}
   });
-  ['prev_student','prev_out','prev_in'].forEach(id => {
-    const el = document.getElementById(id);
-    const icons = { prev_student:'📷', prev_out:'🏠', prev_in:'🛋️' };
-    const labels = { prev_student:'อัปโหลดรูป', prev_out:'อัปโหลดรูปภายนอก', prev_in:'อัปโหลดรูปภายใน' };
-    if (el) { el.innerHTML=`<div class="ph-icon">${icons[id]}</div><p>${labels[id]}</p>`; el.dataset.src=''; }
-  });
-  goStep(1);
-  addMember(); // เพิ่มแถวแรกอัตโนมัติ
+  go(1);addMem();
 }
 
-// ══════════════════════════════════════════════════════════
+// ══════════════════════════════════════════
 //  LOAD / SEARCH
-// ══════════════════════════════════════════════════════════
-async function loadAllRecords() {
-  showSpinner('กำลังโหลดข้อมูลจาก Google Sheets...');
-  try {
-    const res = await gasCall({ action: 'getAll' });
-    hideSpinner();
-    if (res.success) {
-      records = res.data || [];
-      document.getElementById('rec_count').textContent = `พบ ${records.length} รายการ`;
-      filterRecords();
-    } else {
-      showToast('❌ ' + res.message, 'error');
-    }
-  } catch (e) {
-    hideSpinner();
-    showToast('❌ โหลดข้อมูลไม่ได้: ' + e.message, 'error');
-  }
+// ══════════════════════════════════════════
+async function loadAll(){
+  spin('กำลังโหลดจาก Google Sheets...');
+  try{const res=await gas({action:'getAll'});offSpin();
+    if(res.success){recs=res.data||[];document.getElementById('recCnt').textContent=`พบ ${recs.length} รายการ`;filter();}
+    else toast('❌ '+res.message,'tErr');
+  }catch(e){offSpin();toast('❌ '+e.message,'tErr');}
+}
+function filter(){
+  const cls=document.getElementById('sCls').value;
+  const nm=document.getElementById('sName').value.toLowerCase();
+  const f=recs.filter(r=>(!cls||r.std_class===cls)&&(!nm||`${r.std_fname}${r.std_lname}`.toLowerCase().includes(nm)));
+  const ct=document.getElementById('sResults');
+  if(!f.length){ct.innerHTML=`<div class="empty"><div class="ei">🔍</div><p>ไม่พบข้อมูล</p></div>`;return;}
+  ct.innerHTML=f.map(r=>`<div class="rc">
+    <div>
+      <div class="rn">${r.std_fname||''} ${r.std_lname||''} <span class="badge bb">${r.std_class||''}</span></div>
+      <div class="rm">🏫 ${r.school||'-'} | 📅 ${r.savedAt||'-'}<br>💰 รายได้รวม: ${r.total_income||0} บาท | เฉลี่ย: ${r.avg_income||0} บาท/คน</div>
+    </div>
+    <div style="display:flex;gap:6px;flex-wrap:wrap;align-items:flex-start">
+      <button class="btn bo bsm" onclick="editRec('${r.id}')">✏️ แก้ไข</button>
+      <button class="btn bsm" style="background:#f3f4f6;color:#374151" onclick="quickPDF('${r.id}')">📄 PDF</button>
+      <button class="btn br bsm" onclick="delRec('${r.id}')">🗑️</button>
+    </div>
+  </div>`).join('');
+}
+async function delRec(id){
+  if(!confirm('ยืนยันลบ?'))return;
+  spin('กำลังลบ...');
+  try{const res=await gas({action:'delete',id});offSpin();
+    if(res.success){recs=recs.filter(r=>String(r.id)!==String(id));filter();toast('✅ ลบสำเร็จ','tOK');}
+    else toast('❌ '+res.message,'tErr');
+  }catch(e){offSpin();toast('❌ '+e.message,'tErr');}
+}
+function editRec(id){
+  const r=recs.find(x=>String(x.id)===String(id));if(!r)return;
+  eId=String(id);
+  tab('form',document.querySelectorAll('.tabs button')[0]);go(1);
+  setTimeout(()=>{
+    const s=(eid,val)=>{const el=document.getElementById(eid);if(el)el.value=val||'';};
+    ['school','affiliation','std_fname','std_lname','std_class','std_id',
+     'grd_fname','grd_lname','grd_rel','grd_edu','grd_job','grd_phone','grd_id',
+     'rent','travel_km','travel_time','travel_cost','std_money',
+     'addr_no','addr_moo','addr_soi','addr_road','addr_tambon','addr_amphoe','addr_province','addr_zip',
+     'sig1_name','sig2_name','sig3_name','sig3_pos','sig4_name','sig4_id','sig4_pos','sig5_name'
+    ].forEach(f=>s(f,r[f]));
+    if(r.welfare)document.getElementById('welfare').checked=true;
+    const sr=(nm,val)=>{const el=document.querySelector(`input[name="${nm}"][value="${val}"]`);if(el){el.checked=true;el.closest('.ri')?.classList.add('sel');}};
+    ['family_status','live_with','burden','housing','toilet','agri','electric','veh_has','hh_has','travel','photo_src','cert']
+      .forEach(n=>sr(n,r[n]));
+    const sc=(nm,vals)=>{if(!Array.isArray(vals))return;document.querySelectorAll(`input[name="${nm}"]`).forEach(cb=>{cb.checked=vals.includes(cb.value);cb.closest('.ci2')?.classList.toggle('sel',cb.checked);});};
+    ['bt','fl','wl','rf','wt','veh','hh'].forEach((n,i)=>sc(n,[r.burden_type,r.floor_mat,r.wall_mat,r.roof_mat,r.water,r.vehicles,r.household][i]));
+    if(r.photos?.prev_student){const el=document.getElementById('pd_std');if(el){el.innerHTML=`<img src="${r.photos.prev_student}" style="max-width:100%;max-height:140px;border-radius:6px;object-fit:cover">`;el.dataset.src=r.photos.prev_student;}}
+    document.getElementById('mBody').innerHTML='';mc=0;(r.members||[]).forEach(m=>addMem(m));
+    toast('📂 โหลดข้อมูลสำเร็จ กรุณาแก้ไขแล้วกดบันทึก','tInfo');
+  },150);
 }
 
-function filterRecords() {
-  const cls  = document.getElementById('search_class').value;
-  const name = document.getElementById('search_name').value.toLowerCase();
-  const filtered = records.filter(r => {
-    const matchCls  = !cls  || r.std_class === cls;
-    const matchName = !name || `${r.std_fname}${r.std_lname}`.toLowerCase().includes(name);
-    return matchCls && matchName;
-  });
-  const container = document.getElementById('search_results');
-  if (!filtered.length) {
-    container.innerHTML = `<div class="empty-state"><div class="ei">🔍</div><p>ไม่พบข้อมูลที่ค้นหา</p></div>`;
-    return;
-  }
-  container.innerHTML = filtered.map(r => `
-    <div class="rec-card">
-      <div>
-        <div class="rec-name">${r.std_fname||''} ${r.std_lname||''} <span class="badge badge-blue">${r.std_class||''}</span></div>
-        <div class="rec-meta">
-          🏫 ${r.school||'-'} | 📅 ${r.savedAt||'-'}<br>
-          💰 รายได้รวม: ${r.total_income||0} บาท | เฉลี่ย: ${r.avg_income||0} บาท/คน<br>
-          📍 ${[r.addr_tambon,r.addr_amphoe,r.addr_province].filter(Boolean).join(' ')||'-'}
-        </div>
-      </div>
-      <div style="display:flex;gap:7px;flex-wrap:wrap;align-items:flex-start">
-        <button class="btn btn-outline btn-sm" onclick="editRecord('${r.id}')">✏️ แก้ไข</button>
-        <button class="btn btn-sm" style="background:#f3f4f6;color:#374151" onclick="exportSinglePDF('${r.id}')">📄 PDF</button>
-        <button class="btn btn-danger btn-sm" onclick="deleteRecord('${r.id}')">🗑️ ลบ</button>
-      </div>
-    </div>`).join('');
-}
-
-// ══════════════════════════════════════════════════════════
-//  DELETE
-// ══════════════════════════════════════════════════════════
-async function deleteRecord(id) {
-  if (!confirm('ยืนยันลบข้อมูลนักเรียนรายนี้?')) return;
-  showSpinner('กำลังลบข้อมูล...');
-  try {
-    const res = await gasCall({ action: 'delete', id });
-    hideSpinner();
-    if (res.success) {
-      records = records.filter(r => String(r.id) !== String(id));
-      filterRecords();
-      showToast('✅ ลบข้อมูลสำเร็จ', 'success');
-    } else showToast('❌ ' + res.message, 'error');
-  } catch (e) { hideSpinner(); showToast('❌ ' + e.message, 'error'); }
-}
-
-// ══════════════════════════════════════════════════════════
-//  EDIT — load record into form
-// ══════════════════════════════════════════════════════════
-function editRecord(id) {
-  const r = records.find(rec => String(rec.id) === String(id));
-  if (!r) return;
-  editingId = String(id);
-  switchTab('form', document.querySelectorAll('.main-tabs button')[0]);
-  goStep(1);
-  setTimeout(() => {
-    const s = (eid, val) => { const el=document.getElementById(eid); if(el) el.value=val||''; };
-    s('school',r.school); s('affiliation',r.affiliation);
-    s('std_fname',r.std_fname); s('std_lname',r.std_lname);
-    s('std_class',r.std_class); s('std_id',r.std_id);
-    s('grd_fname',r.grd_fname); s('grd_lname',r.grd_lname); s('grd_rel',r.grd_rel);
-    s('grd_edu',r.grd_edu); s('grd_job',r.grd_job); s('grd_phone',r.grd_phone);
-    s('grd_id',r.grd_id); s('rent',r.rent);
-    s('travel_km',r.travel_km); s('travel_time',r.travel_time);
-    s('travel_cost',r.travel_cost); s('std_money',r.std_money);
-    s('addr_no',r.addr_no); s('addr_moo',r.addr_moo); s('addr_street',r.addr_street);
-    s('addr_tambon',r.addr_tambon); s('addr_amphoe',r.addr_amphoe);
-    s('addr_province',r.addr_province); s('addr_zip',r.addr_zip);
-    s('sig1_name',r.sig1_name); s('sig2_name',r.sig2_name);
-    s('sig3_name',r.sig3_name); s('sig3_pos',r.sig3_pos);
-    s('sig4_name',r.sig4_name); s('sig4_id',r.sig4_id);
-    s('sig4_pos',r.sig4_pos); s('sig5_name',r.sig5_name);
-    if (r.welfare) document.getElementById('welfare').checked = true;
-
-    const setRadio = (name, val) => {
-      const el = document.querySelector(`input[name="${name}"][value="${val}"]`);
-      if (el) { el.checked = true; el.closest('.radio-item')?.classList.add('sel'); }
-    };
-    ['family_status','live_with','burden','housing','toilet','agri','electric','vehicle_has','household_has','travel','photo_src','cert']
-      .forEach(n => setRadio(n, r[n]));
-
-    const setChecks = (name, vals) => {
-      if (!Array.isArray(vals)) return;
-      document.querySelectorAll(`input[name="${name}"]`).forEach(cb => {
-        cb.checked = vals.includes(cb.value);
-        cb.closest('.check-item')?.classList.toggle('sel', cb.checked);
-      });
-    };
-    setChecks('burden_type', r.burden_type); setChecks('floor', r.floor_mat);
-    setChecks('wall', r.wall_mat); setChecks('roof', r.roof_mat);
-    setChecks('water', r.water); setChecks('vehicle', r.vehicles);
-    setChecks('household', r.household);
-
-    // Restore photos
-    if (r.photos?.prev_student) {
-      const el = document.getElementById('prev_student');
-      if (el) { el.innerHTML=`<img src="${r.photos.prev_student}">`; el.dataset.src=r.photos.prev_student; }
-    }
-    if (r.photos?.prev_out) {
-      const el = document.getElementById('prev_out');
-      if (el) { el.innerHTML=`<img src="${r.photos.prev_out}">`; el.dataset.src=r.photos.prev_out; }
-    }
-
-    // Restore members
-    document.getElementById('memberBody').innerHTML = '';
-    memberCount = 0;
-    (r.members||[]).forEach(m => addMember(m));
-
-    showToast('📂 โหลดข้อมูลสำเร็จ กรุณาแก้ไขแล้วกดบันทึก', 'info');
-  }, 150);
-}
-
-// ══════════════════════════════════════════════════════════
-//  EXPORT PDF
-// ══════════════════════════════════════════════════════════
-function loadExportList() {
-  const cls = document.getElementById('exp_class').value;
-  const sel = document.getElementById('exp_student');
-  sel.innerHTML = '<option value="">-- เลือกนักเรียน --</option>';
-  records.filter(r => !cls || r.std_class === cls).forEach(r => {
-    const o = document.createElement('option');
-    o.value = r.id;
-    o.textContent = `${r.std_fname||''} ${r.std_lname||''} (${r.std_class||''})`;
+// ══════════════════════════════════════════
+//  EXPORT PDF via iframe (pdf-template.html)
+// ══════════════════════════════════════════
+function loadExpList(){
+  const cls=document.getElementById('expCls').value;
+  const sel=document.getElementById('expStd');
+  sel.innerHTML='<option value="">-- เลือกนักเรียน --</option>';
+  recs.filter(r=>!cls||r.std_class===cls).forEach(r=>{
+    const o=document.createElement('option');o.value=r.id;
+    o.textContent=`${r.std_fname||''} ${r.std_lname||''} (${r.std_class||''})`;
     sel.appendChild(o);
   });
 }
-
-function previewBeforeExport() {
-  const id = document.getElementById('exp_student').value;
-  if (!id) { showToast('กรุณาเลือกนักเรียน', 'error'); return; }
-  const r = records.find(rec => String(rec.id) === String(id));
-  if (!r) return;
-  document.getElementById('export_preview').innerHTML = `
-    <div class="card">
-      <div class="card-title">ตัวอย่างข้อมูล — ${r.std_fname} ${r.std_lname}</div>
-      <div class="form-grid g2" style="font-size:13px">
-        <div>⭐ ชั้น: <strong>${r.std_class||'-'}</strong></div>
-        <div>🏫 โรงเรียน: <strong>${r.school||'-'}</strong></div>
-        <div>🪪 เลขประชาชน: <strong>${r.std_id||'-'}</strong></div>
-        <div>👨‍👩‍👧 ครอบครัว: <strong>${r.family_status||'-'}</strong></div>
-        <div>💰 รายได้รวม: <strong>${r.total_income||0} บาท/เดือน</strong></div>
-        <div>👥 รายได้เฉลี่ย: <strong>${r.avg_income||0} บาท/คน</strong></div>
-        <div>📍 ที่อยู่: <strong>${[r.addr_tambon,r.addr_amphoe,r.addr_province].filter(Boolean).join(' ')||'-'}</strong></div>
-        <div>🚗 เดินทาง: <strong>${r.travel||'-'}</strong></div>
+function doPreview(){
+  const id=document.getElementById('expStd').value;
+  if(!id){toast('กรุณาเลือกนักเรียน','tErr');return;}
+  const r=recs.find(x=>String(x.id)===String(id));if(!r)return;
+  document.getElementById('expPreview').innerHTML=`
+    <div class="card" style="font-size:13px">
+      <div class="ctitle">ตัวอย่าง — ${r.std_fname} ${r.std_lname}</div>
+      <div class="g g2">
+        <div>⭐ ชั้น: <b>${r.std_class||'-'}</b></div><div>🏫 โรงเรียน: <b>${r.school||'-'}</b></div>
+        <div>🪪 เลขประชาชน: <b>${r.std_id||'-'}</b></div><div>👨‍👩‍👧 ครอบครัว: <b>${r.family_status||'-'}</b></div>
+        <div>💰 รายได้รวม: <b>${r.total_income||0} บาท/เดือน</b></div>
+        <div>👥 เฉลี่ย: <b>${r.avg_income||0} บาท/คน</b></div>
+        <div>📍 ที่อยู่: <b>${[r.addr_tambon,r.addr_amphoe,r.addr_province].filter(Boolean).join(' ')||'-'}</b></div>
+        <div>🚗 เดินทาง: <b>${r.travel||'-'}</b></div>
       </div>
-      <p style="margin-top:12px;color:var(--success);font-weight:700;font-size:14px">✅ ข้อมูลพร้อมสำหรับสร้าง PDF</p>
+      <p style="margin-top:10px;color:var(--ok);font-weight:700">✅ พร้อมสร้าง PDF ตรงต้นฉบับ กสศ.01</p>
     </div>`;
 }
-
-function exportSinglePDF(id) {
-  const r = records.find(rec => String(rec.id) === String(id));
-  if (r) generatePDF(r);
+function quickPDF(id){const r=recs.find(x=>String(x.id)===String(id));if(r)genPDF(r);}
+function doPDF(){
+  const id=document.getElementById('expStd').value;
+  if(!id){toast('กรุณาเลือกนักเรียน','tErr');return;}
+  const r=recs.find(x=>String(x.id)===String(id));if(r)genPDF(r);
 }
 
-function exportPDF() {
-  const id = document.getElementById('exp_student').value;
-  if (!id) { showToast('กรุณาเลือกนักเรียน', 'error'); return; }
-  const r = records.find(rec => String(rec.id) === String(id));
-  if (r) generatePDF(r);
-}
+function genPDF(r) {
+  spin('กำลังสร้าง PDF แบบฟอร์ม กสศ.01...');
+  const iframe = document.getElementById('pdf-iframe');
 
-function generatePDF(r) {
-  showSpinner('กำลังสร้าง PDF แบบฟอร์ม กสศ.01...');
-  const div = document.createElement('div');
-  div.style.cssText = 'position:fixed;left:0;top:0;width:210mm;font-family:Sarabun,sans-serif;font-size:11pt;color:#000;background:#fff;padding:12mm 14mm;';
-  div.innerHTML = buildPDFHTML(r);
-  document.body.appendChild(div);
+  const doGenerate = () => {
+    try {
+      const iDoc = iframe.contentWindow;
+      // Call fillKSS01 inside the iframe
+      iDoc.fillKSS01(r);
+      setTimeout(() => {
+        iDoc.html2pdf().set({
+          margin: 0,
+          filename: `กสศ01_${r.std_fname||''}${r.std_lname||''}_${r.std_class||''}.pdf`,
+          image: { type:'jpeg', quality:0.97 },
+          html2canvas: { scale:2, useCORS:true, logging:false, windowWidth:794 },
+          jsPDF: { unit:'mm', format:'a4', orientation:'portrait' },
+          pagebreak: { mode:['css'], before:'.page' }
+        }).from(iframe.contentDocument.body).save()
+          .then(()=>{ offSpin(); toast('✅ PDF สร้างสำเร็จ ตรงต้นฉบับ กสศ.01','tOK'); })
+          .catch(e=>{ offSpin(); toast('❌ '+e.message,'tErr'); });
+      }, 600);
+    } catch(e) { offSpin(); toast('❌ '+e.message,'tErr'); }
+  };
 
-  setTimeout(() => {
-    html2pdf().set({
-      margin: 8,
-      filename: `กสศ01_${r.std_fname||''}${r.std_lname||''}_${r.std_class||''}.pdf`,
-      image: { type: 'jpeg', quality: 0.95 },
-      html2canvas: { scale: 2, useCORS: true, logging: false },
-      jsPDF: { unit: 'mm', format: 'a4', orientation: 'portrait' },
-      pagebreak: { mode: ['css','legacy'], before: '.pb' }
-    }).from(div).save().then(() => {
-      document.body.removeChild(div);
-      hideSpinner();
-      showToast('✅ PDF สร้างสำเร็จ', 'success');
-    }).catch(e => { document.body.removeChild(div); hideSpinner(); showToast('❌ '+e.message,'error'); });
-  }, 200);
-}
-
-function buildPDFHTML(r) {
-  const cb  = v => v ? '☑' : '☐';
-  const val = v => v || '—';
-  const members = (r.members||[]).map((m,i) => `
-    <tr>
-      <td style="text-align:center">${i+1}</td>
-      <td>${val(m.name)}</td>
-      <td style="text-align:center">${val(m.rel)}</td>
-      <td style="text-align:center;font-size:9pt">${val(m.pid)}</td>
-      <td style="text-align:center">${val(m.edu)}</td>
-      <td style="text-align:center">${val(m.age)}</td>
-      <td style="text-align:center">${cb(m.disabled)}</td>
-      <td style="text-align:center">${cb(m.chronic)}</td>
-      <td style="text-align:right">${m.wage||0}</td>
-      <td style="text-align:right">${m.agri||0}</td>
-      <td style="text-align:right">${m.biz||0}</td>
-      <td style="text-align:right">${m.welf||0}</td>
-      <td style="text-align:right">${m.other||0}</td>
-      <td style="text-align:right;font-weight:700">${m.total||0}</td>
-    </tr>`).join('');
-
-  const sigBox = (label, name, sigImg) => `
-    <div style="text-align:center;flex:1;min-width:140px">
-      <div style="border:1px solid #999;height:70px;margin-bottom:4px;display:flex;align-items:center;justify-content:center;background:#fafafa">
-        ${sigImg && sigImg.length > 50 ? `<img src="${sigImg}" style="max-height:66px">` : ''}
-      </div>
-      <div style="border-top:1px solid #000;padding-top:3px;font-size:9pt">ลงชื่อ .......${name||'.............'}......</div>
-      <div style="font-size:9pt">(${label})</div>
-    </div>`;
-
-  return `
-  <div style="text-align:right;font-size:9pt;margin-bottom:2px">แบบ นร./กสศ.01 | ฉบับปรับปรุง 6 มีนาคม 2569</div>
-  <h2 style="text-align:center;font-size:15pt;margin:0">แบบขอรับเงินอุดหนุนนักเรียนยากจน</h2>
-  <h3 style="text-align:center;font-size:12pt;margin:2px 0 10px">ภาคเรียนที่ 1 ปีการศึกษา 2569</h3>
-
-  <table style="width:100%;border-collapse:collapse;margin-bottom:8px;font-size:10pt">
-    <tr><td><b>โรงเรียน</b> ${val(r.school)}</td><td><b>สังกัด</b> ${val(r.affiliation)}</td></tr>
-  </table>
-
-  <!-- Section 1 -->
-  <div style="border:1px solid #aaa;padding:8px;margin-bottom:8px">
-    <div style="display:flex;justify-content:space-between;align-items:flex-start">
-      <div style="flex:1">
-        <b>1. ข้อมูลนักเรียน</b>
-        <table style="width:100%;font-size:10pt;margin-top:4px;border-collapse:collapse">
-          <tr><td style="width:120px;padding:2px 4px"><b>ชื่อ-นามสกุล:</b></td><td style="padding:2px 4px;border-bottom:1px solid #ddd">${val(r.std_fname)} ${val(r.std_lname)}</td>
-              <td style="width:50px;padding:2px 4px"><b>ชั้น:</b></td><td style="padding:2px 4px;border-bottom:1px solid #ddd">${val(r.std_class)}</td></tr>
-          <tr><td style="padding:2px 4px"><b>เลขประชาชน:</b></td><td colspan="3" style="padding:2px 4px;border-bottom:1px solid #ddd;letter-spacing:2px">${val(r.std_id)}</td></tr>
-          <tr><td style="padding:2px 4px"><b>สถานภาพ:</b></td><td colspan="3" style="padding:2px 4px;border-bottom:1px solid #ddd">${val(r.family_status)}</td></tr>
-          <tr><td style="padding:2px 4px"><b>อาศัยอยู่กับ:</b></td><td colspan="3" style="padding:2px 4px;border-bottom:1px solid #ddd">${val(r.live_with)}</td></tr>
-          <tr><td style="padding:2px 4px"><b>ผู้ปกครอง:</b></td><td style="padding:2px 4px;border-bottom:1px solid #ddd">${val(r.grd_fname)} ${val(r.grd_lname)} (${val(r.grd_rel)})</td>
-              <td style="padding:2px 4px"><b>การศึกษา:</b></td><td style="padding:2px 4px;border-bottom:1px solid #ddd">${val(r.grd_edu)}</td></tr>
-          <tr><td style="padding:2px 4px"><b>อาชีพ:</b></td><td style="padding:2px 4px;border-bottom:1px solid #ddd">${val(r.grd_job)}</td>
-              <td style="padding:2px 4px"><b>โทร:</b></td><td style="padding:2px 4px;border-bottom:1px solid #ddd">${val(r.grd_phone)}</td></tr>
-          <tr><td style="padding:2px 4px"><b>เลขประชาชน ผปค.:</b></td><td colspan="3" style="padding:2px 4px;border-bottom:1px solid #ddd;letter-spacing:2px">${val(r.grd_id)}</td></tr>
-          <tr><td style="padding:2px 4px"><b>สวัสดิการรัฐ:</b></td><td colspan="3" style="padding:2px 4px">${r.welfare ? '☑ ได้รับสวัสดิการแห่งรัฐ' : '☐ ไม่ได้รับ'}</td></tr>
-        </table>
-      </div>
-      ${r.photos?.prev_student && r.photos.prev_student.length > 50 ?
-        `<div style="margin-left:12px;text-align:center"><img src="${r.photos.prev_student}" style="width:80px;height:100px;object-fit:cover;border:1px solid #aaa"><div style="font-size:8pt;margin-top:3px">รูปถ่ายนักเรียน</div></div>` : 
-        `<div style="margin-left:12px;width:80px;height:100px;border:1px solid #aaa;display:flex;align-items:center;justify-content:center;font-size:8pt;color:#999">รูปถ่าย<br>นักเรียน</div>`}
-    </div>
-  </div>
-
-  <!-- Section 2 -->
-  <div style="border:1px solid #aaa;padding:8px;margin-bottom:8px" class="pb">
-    <b>2. สมาชิกในครัวเรือน</b> จำนวน ${(r.members||[]).length} คน
-    <table style="width:100%;border-collapse:collapse;margin-top:6px;font-size:9pt">
-      <thead>
-        <tr style="background:#e8eaf6">
-          <th style="border:1px solid #aaa;padding:4px">คนที่</th>
-          <th style="border:1px solid #aaa;padding:4px">ชื่อ-นามสกุล</th>
-          <th style="border:1px solid #aaa;padding:4px">สัมพันธ์</th>
-          <th style="border:1px solid #aaa;padding:4px">เลขประชาชน</th>
-          <th style="border:1px solid #aaa;padding:4px">การศึกษา</th>
-          <th style="border:1px solid #aaa;padding:4px">อายุ</th>
-          <th style="border:1px solid #aaa;padding:4px">พิการ</th>
-          <th style="border:1px solid #aaa;padding:4px">โรคเรื้อรัง</th>
-          <th style="border:1px solid #aaa;padding:4px">ค่าจ้าง</th>
-          <th style="border:1px solid #aaa;padding:4px">เกษตร</th>
-          <th style="border:1px solid #aaa;padding:4px">ธุรกิจ</th>
-          <th style="border:1px solid #aaa;padding:4px">สวัสดิการ</th>
-          <th style="border:1px solid #aaa;padding:4px">อื่นๆ</th>
-          <th style="border:1px solid #aaa;padding:4px">รวม</th>
-        </tr>
-      </thead>
-      <tbody>
-        ${members}
-        ${Array(Math.max(0,5-(r.members||[]).length)).fill(0).map((_,i)=>`
-          <tr><td style="border:1px solid #ccc;padding:6px;text-align:center">${(r.members||[]).length+i+1}</td>
-          ${Array(13).fill('<td style="border:1px solid #ccc;padding:6px"> </td>').join('')}</tr>`).join('')}
-      </tbody>
-      <tfoot>
-        <tr style="background:#e8f5e9;font-weight:700">
-          <td colspan="13" style="border:1px solid #aaa;padding:5px;text-align:right">รวมรายได้ครัวเรือน (บาท/เดือน)</td>
-          <td style="border:1px solid #aaa;padding:5px;text-align:right">${val(r.total_income)}</td>
-        </tr>
-        <tr style="background:#e3f2fd;font-weight:700">
-          <td colspan="13" style="border:1px solid #aaa;padding:5px;text-align:right">รายได้เฉลี่ยต่อคน (บาท/เดือน)</td>
-          <td style="border:1px solid #aaa;padding:5px;text-align:right">${val(r.avg_income)}</td>
-        </tr>
-      </tfoot>
-    </table>
-  </div>
-
-  <!-- Section 3 -->
-  <div style="border:1px solid #aaa;padding:8px;margin-bottom:8px;font-size:10pt" class="pb">
-    <b>3. ข้อมูลสถานะของครัวเรือน</b>
-    <table style="width:100%;margin-top:6px;border-collapse:collapse;font-size:9pt">
-      <tr><td style="padding:3px;width:160px"><b>3.1 ภาระพึ่งพิง:</b></td><td style="padding:3px">${val(r.burden)} ${(r.burden_type||[]).join(', ')}</td></tr>
-      <tr><td style="padding:3px"><b>3.2 การอยู่อาศัย:</b></td><td style="padding:3px">${val(r.housing)} ${r.rent?'ค่าเช่า '+r.rent+' บาท/เดือน':''}</td></tr>
-      <tr><td style="padding:3px"><b>3.3 วัสดุพื้น:</b></td><td style="padding:3px">${(r.floor_mat||[]).join(', ')||'—'}</td></tr>
-      <tr><td style="padding:3px"><b>วัสดุฝา:</b></td><td style="padding:3px">${(r.wall_mat||[]).join(', ')||'—'}</td></tr>
-      <tr><td style="padding:3px"><b>วัสดุหลังคา:</b></td><td style="padding:3px">${(r.roof_mat||[]).join(', ')||'—'}</td></tr>
-      <tr><td style="padding:3px"><b>3.4 ที่ดินเกษตร:</b></td><td style="padding:3px">${val(r.agri)}</td></tr>
-      <tr><td style="padding:3px"><b>3.5 แหล่งน้ำดื่ม:</b></td><td style="padding:3px">${(r.water||[]).join(', ')||'—'}</td></tr>
-      <tr><td style="padding:3px"><b>3.6 ไฟฟ้า:</b></td><td style="padding:3px">${val(r.electric)}</td></tr>
-      <tr><td style="padding:3px"><b>3.7 ยานพาหนะ:</b></td><td style="padding:3px">${(r.vehicles||[]).join(', ')||val(r.vehicle_has)}</td></tr>
-      <tr><td style="padding:3px"><b>3.8 ของใช้ครัวเรือน:</b></td><td style="padding:3px">${(r.household||[]).join(', ')||val(r.household_has)}</td></tr>
-    </table>
-  </div>
-
-  <!-- Section 5-7 -->
-  <div style="border:1px solid #aaa;padding:8px;margin-bottom:8px;font-size:10pt" class="pb">
-    <b>5. การเดินทาง</b>
-    <table style="width:100%;margin-top:4px;font-size:9pt;border-collapse:collapse">
-      <tr><td style="padding:2px;width:160px"><b>วิธีเดินทาง:</b></td><td>${val(r.travel)}</td>
-          <td style="width:120px"><b>ระยะทาง:</b></td><td>${val(r.travel_km)} กม.</td></tr>
-      <tr><td style="padding:2px"><b>เวลา:</b></td><td>${val(r.travel_time)} ชม.</td>
-          <td><b>ค่าใช้จ่าย:</b></td><td>${val(r.travel_cost)} บาท/เดือน</td></tr>
-    </table>
-    <div style="margin-top:6px"><b>6. ที่ตั้งที่พักอาศัยปัจจุบัน:</b>
-      บ้านเลขที่ ${val(r.addr_no)} หมู่ ${val(r.addr_moo)} ${val(r.addr_street)}
-      ต.${val(r.addr_tambon)} อ.${val(r.addr_amphoe)} จ.${val(r.addr_province)} ${val(r.addr_zip)}
-    </div>
-    <div style="margin-top:8px;display:flex;gap:12px">
-      ${r.photos?.prev_out && r.photos.prev_out.length > 50 ?
-        `<div style="text-align:center"><img src="${r.photos.prev_out}" style="width:120px;height:90px;object-fit:cover;border:1px solid #aaa"><div style="font-size:8pt;margin-top:2px">รูปที่ 1 (ภายนอก)</div></div>` : ''}
-      ${r.photos?.prev_in && r.photos.prev_in.length > 50 ?
-        `<div style="text-align:center"><img src="${r.photos.prev_in}" style="width:120px;height:90px;object-fit:cover;border:1px solid #aaa"><div style="font-size:8pt;margin-top:2px">รูปที่ 2 (ภายใน)</div></div>` : ''}
-    </div>
-  </div>
-
-  <!-- Section 8-10 signatures -->
-  <div style="border:1px solid #aaa;padding:8px;font-size:10pt" class="pb">
-    <b>8-10. การรับรองข้อมูล</b>
-    <div style="display:flex;gap:10px;margin-top:10px;flex-wrap:wrap;justify-content:space-around">
-      ${sigBox('นักเรียน', r.sig1_name, r.sigs?.sig1)}
-      ${sigBox('ผู้ปกครอง', r.sig2_name, r.sigs?.sig2)}
-      ${sigBox('ครูผู้เยี่ยมบ้าน', r.sig3_name, r.sigs?.sig3)}
-      ${sigBox('เจ้าหน้าที่ของรัฐ', r.sig4_name, r.sigs?.sig4)}
-      ${sigBox('ผู้อำนวยการ', r.sig5_name, r.sigs?.sig5)}
-    </div>
-    <div style="margin-top:10px;font-size:8pt;text-align:center;color:#555;border-top:1px solid #ddd;padding-top:6px">
-      กสศ. เลขที่ 388 อาคาร เอส.พี. ชั้น 13 ถนนพหลโยธิน แขวงสามเสนใน เขตพญาไท กรุงเทพฯ 10400 | โทร 02-079-5475 กด 1 | contact@eef.or.th
-    </div>
-  </div>`;
-}
-
-// ══════════════════════════════════════════════════════════
-//  UI HELPERS
-// ══════════════════════════════════════════════════════════
-function showSpinner(msg) {
-  document.getElementById('spinnerMsg').textContent = msg || 'กำลังดำเนินการ...';
-  document.getElementById('spinner').style.display = 'flex';
-}
-function hideSpinner() { document.getElementById('spinner').style.display = 'none'; }
-
-function showToast(msg, type='info') {
-  const t = document.getElementById('toast');
-  t.textContent = msg;
-  t.className = `toast ${type} show`;
-  setTimeout(() => t.classList.remove('show'), 3500);
-}
-
-function toggleClass(el, cls) {
-  el.closest('.radio-item,.check-item')?.classList.toggle(cls, el.checked);
-}
-
-// ══════════════════════════════════════════════════════════
-//  INIT
-// ══════════════════════════════════════════════════════════
-document.addEventListener('DOMContentLoaded', () => {
-  // Restore API URL
-  if (GAS_URL) {
-    document.getElementById('apiUrlInput').value = GAS_URL;
-    document.getElementById('configBanner').classList.add('hidden');
-    updateApiStatus(true);
+  if (iframeReady) { doGenerate(); }
+  else {
+    iframe.onload = () => { iframeReady=true; doGenerate(); };
+    iframe.src = 'pdf-template.html?t=' + Date.now();
   }
+}
 
-  // Radio / Checkbox visual state
-  document.querySelectorAll('input[type=radio]').forEach(r => {
-    r.addEventListener('change', function () {
-      document.querySelectorAll(`input[name="${this.name}"]`)
-        .forEach(i => i.closest('.radio-item')?.classList.toggle('sel', i.checked));
-    });
-  });
+// ══════════════════════════════════════════
+//  UI HELPERS
+// ══════════════════════════════════════════
+function spin(m){document.getElementById('spinMsg').textContent=m||'กำลังดำเนินการ...';document.getElementById('spinner').style.display='flex';}
+function offSpin(){document.getElementById('spinner').style.display='none';}
+function toast(m,cls='tInfo'){const t=document.getElementById('toast');t.textContent=m;t.className=`toast ${cls} show`;setTimeout(()=>t.classList.remove('show'),3500);}
+function tgl(el){el.closest('.ri,.ci2')?.classList.toggle('sel',el.checked);}
 
-  // Initial setup
-  addMember();  // แถวสมาชิกแรก
-  updateStepUI();
+// ══════════════════════════════════════════
+//  INIT
+// ══════════════════════════════════════════
+document.addEventListener('DOMContentLoaded',()=>{
+  if(GAS){document.getElementById('apiIn').value=GAS;document.getElementById('cfgBar').style.display='none';setConn(true);}
+  document.querySelectorAll('input[type=radio]').forEach(r=>{r.addEventListener('change',function(){
+    document.querySelectorAll(`input[name="${this.name}"]`).forEach(i=>i.closest('.ri')?.classList.toggle('sel',i.checked));
+  });});
+  addMem(); updStep();
 });
 </script>
 </body>
