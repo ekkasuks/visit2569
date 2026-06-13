@@ -600,14 +600,13 @@ canvas.sigc{display:block;background:#fafafa;cursor:crosshair;touch-action:none;
 <!-- Toast -->
 <div class="toast" id="toast"></div>
 
-<!-- PDF hidden container — render ใน div แทน iframe -->
-<div id="pdf-root" style="position:fixed;left:-9999px;top:0;width:210mm;font-family:'Sarabun',sans-serif;visibility:hidden;pointer-events:none"></div>
+<!-- PDF container สร้างแบบ dynamic ใน genPDF() -->
 
 <script>
 // ══════════════════════════════════════════
 //  STATE
 // ══════════════════════════════════════════
-let GAS  = localStorage.getItem('kss_url') || 'https://script.google.com/macros/s/AKfycbw2KgL-_skqopvMuzeTnvpY3keiU21lBu6lnLPiEF_Rsg5QbN3wwW4ZSYMBXkbkWkIoUg/exec';
+let GAS  = localStorage.getItem('kss_url') || 'https://script.google.com/macros/s/AKfycbxpeBElyWj6Ngc24Ho8-qIDUiEgMEoJ6l6a60ZsjP9Qa2pNvQmycb8Y4VtNy1v3JsD4NA/exec';
 let recs = [];
 let eId  = null;
 let cur  = 1;
@@ -884,35 +883,75 @@ function editRec(id){
 }
 
 function genPDF(r) {
-  spin('กำลังสร้าง PDF แบบฟอร์ม กสศ.01...');
-  try {
-    const root = document.getElementById('pdf-root');
-    // ใส่ HTML ของ template ลงใน div
-    root.innerHTML = buildPDFTemplate();
-    root.style.visibility = 'visible';
+  spin('กำลังเตรียมข้อมูล...');
 
-    // รอ font โหลด แล้วค่อย fill ข้อมูล
+  // 1) สร้าง overlay คลุมหน้าจอ ใส่ div สำหรับ render PDF
+  const overlay = document.createElement('div');
+  overlay.style.cssText = [
+    'position:fixed','inset:0','z-index:9999',
+    'background:rgba(0,0,0,0.01)',   // ต้องมองเห็น แต่แทบโปร่งใส
+    'overflow:auto',
+    'pointer-events:none'
+  ].join(';');
+
+  const root = document.createElement('div');
+  root.style.cssText = [
+    'width:210mm',
+    'background:#fff',
+    'font-family:Sarabun,sans-serif',
+    'position:absolute',
+    'top:0','left:0'
+  ].join(';');
+
+  overlay.appendChild(root);
+  document.body.appendChild(overlay);
+
+  // 2) inject HTML template + fill ข้อมูล
+  root.innerHTML = buildPDFTemplate();
+  fillKSS01(r, root);
+
+  // 3) รอ font Sarabun โหลดจาก Google Fonts
+  const fontWait = document.fonts
+    ? document.fonts.ready
+    : Promise.resolve();
+
+  fontWait.then(() => {
+    spin('กำลังสร้าง PDF...');
+
+    // เพิ่ม delay เล็กน้อยให้ browser render รูปภาพ
     setTimeout(() => {
-      fillKSS01(r, root);
-      setTimeout(() => {
-        html2pdf().set({
-          margin:      0,
-          filename:    `กสศ01_${r.std_fname||''}${r.std_lname||''}_${r.std_class||''}.pdf`,
-          image:       { type:'jpeg', quality:0.97 },
-          html2canvas: { scale:2, useCORS:true, logging:false, windowWidth:794 },
-          jsPDF:       { unit:'mm', format:'a4', orientation:'portrait' },
-          pagebreak:   { mode:['css'], before:'.kss-page' }
-        }).from(root).save()
-          .then(()=>{
-            root.innerHTML='';
-            root.style.visibility='hidden';
-            offSpin();
-            toast('✅ PDF สร้างสำเร็จ ตรงต้นฉบับ กสศ.01','tOK');
-          })
-          .catch(e=>{ offSpin(); toast('❌ '+e.message,'tErr'); });
-      }, 800);
-    }, 300);
-  } catch(e) { offSpin(); toast('❌ '+e.message,'tErr'); }
+      const fname = `กสศ01_${r.std_fname||''}${r.std_lname||''}_${r.std_class||''}.pdf`;
+
+      html2pdf()
+        .set({
+          margin:      [0, 0, 0, 0],
+          filename:    fname,
+          image:       { type: 'jpeg', quality: 0.97 },
+          html2canvas: {
+            scale:       2,
+            useCORS:     true,
+            logging:     false,
+            letterRendering: true,
+            allowTaint:  true
+          },
+          jsPDF:       { unit: 'mm', format: 'a4', orientation: 'portrait' },
+          pagebreak:   { mode: 'css', before: '.kss-page' }
+        })
+        .from(root)
+        .save()
+        .then(() => {
+          document.body.removeChild(overlay);
+          offSpin();
+          toast('✅ PDF สร้างสำเร็จ!', 'tOK');
+        })
+        .catch(err => {
+          document.body.removeChild(overlay);
+          offSpin();
+          toast('❌ ' + err.message, 'tErr');
+          console.error('html2pdf error:', err);
+        });
+    }, 1200); // รอ render รูปภาพ + font
+  });
 }
 
 // ── สร้าง HTML โครงสร้าง PDF 5 หน้า ──────────────────────
